@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useMemo, useEffect } from "react";
 import useFetch from "../customHooks/useFetch";
-import useCrmContext from "../context/CRMContext";
+import useCrmContext from "../context/CrmContext";
 import BadgePill from "../components/BadgePill";
 import {
   STATUS_COLORS,

@@ -1,5 +1,5 @@
 import useFilter from "../customHooks/useFilter";
-import useCrmContext from "../context/CRMContext";
+import useCrmContext from "../context/CrmContext";
 import LeadsComponent from "../components/LeadsComponent";
 
 const Status = () => {

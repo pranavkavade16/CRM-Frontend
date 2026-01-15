@@ -1,4 +1,4 @@
-import useCrmContext from "../context/CRMContext";
+import useCrmContext from "../context/CrmContext";
 
 export const useLeadsData = () => {
   const { leadsData, leadsError, leadsLoading } = useCrmContext();

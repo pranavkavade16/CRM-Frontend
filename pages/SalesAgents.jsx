@@ -1,4 +1,4 @@
-import useCrmContext from "../context/CRMContext";
+import useCrmContext from "../context/CrmContext";
 import { Link } from "react-router-dom";
 const SalesAgents = () => {
   const { agentsData, agentsError, agentsLoading } = useCrmContext();

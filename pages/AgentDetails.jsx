@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import useCrmContext from "../context/CRMContext";
+import useCrmContext from "../context/CrmContext";
 import LeadsComponent from "../components/LeadsComponent";
 const AgentDetails = () => {
   const { salesAgentId } = useParams();

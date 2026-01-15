@@ -6,7 +6,7 @@ import {
   PRIORITY_COLORS,
   SOURCE_COLORS,
 } from "../utils/badgeMap";
-import useCrmContext from "../context/CRMContext";
+import useCrmContext from "../context/CrmContext";
 
 const AddLead = () => {
   const [formData, setFormData] = useState({

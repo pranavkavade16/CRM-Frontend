@@ -1,4 +1,4 @@
-import useCrmContext from "../context/CRMContext";
+import useCrmContext from "../context/CrmContext";
 import LeadsComponent from "../components/LeadsComponent";
 import PieChartComponent from "../components/PieChartComponent";
 import BarChart from "../components/BarChart";
