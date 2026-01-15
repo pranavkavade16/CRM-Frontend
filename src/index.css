@@ -1,0 +1,182 @@
+.dashboard-wrapper {
+  margin-left: 220px; /* sidebar width */
+  width: calc(100% - 220px); /* remaining screen */
+  padding: 24px;
+  background-color: #f8f9fa;
+}
+
+.nav-bar {
+  margin-left: 220px; /* sidebar width */
+  width: calc(100% - 220px); /* remaining screen */
+  height: 70px;
+  padding: 17px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid lightgray;
+}
+
+.heading-box {
+  background-color: white;
+  border-bottom: 1px solid lightgray;
+}
+
+/* Bigger cards so they fill space nicely */
+.dashboard-card {
+  min-height: 150px;
+}
+
+.dashboard-card .card-body {
+  padding: 22px;
+}
+
+.card {
+  display: flex;
+}
+
+.card-icon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 220px;
+  height: 100vh;
+  background-color: #0b132b;
+  color: #fff;
+  padding: 20px;
+}
+
+/* Brand */
+.brand {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Sidebar links */
+.sidebar .nav-link {
+  color: #cfd8dc;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.sidebar .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.sidebar .nav-link.active {
+  background-color: #1c2541;
+  color: #fff;
+}
+
+/* Main content */
+.content {
+  margin-left: 240px;
+  padding: 24px;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: 0.3s ease;
+  }
+
+  .sidebar.show {
+    transform: translateX(0);
+  }
+
+  .content {
+    margin-left: 0;
+  }
+}
+
+/* Soft/Pastel pill badges using Bootstrap color variables */
+.badge-soft {
+  /* Size & shape */
+  padding: 0.45rem 0.85rem; /* bigger than default */
+  font-size: 0.95rem; /* slightly larger text */
+  line-height: 1.2;
+  border-radius: 999px; /* pill */
+
+  /* Typography */
+  font-weight: 500; /* less bold than default .badge */
+  text-transform: none;
+  letter-spacing: 0;
+
+  /* Remove solid style (we'll set soft background below) */
+  border: none;
+}
+
+/* Use Bootstrap CSS variables for consistent palette */
+.badge-soft.bg-primary {
+  background-color: rgba(var(--bs-primary-rgb), 0.16) !important;
+  color: var(--bs-primary) !important;
+}
+.badge-soft.bg-success {
+  background-color: rgba(var(--bs-success-rgb), 0.16) !important;
+  color: var(--bs-success) !important;
+}
+.badge-soft.bg-info {
+  background-color: rgba(var(--bs-info-rgb), 0.18) !important;
+  color: var(--bs-info) !important;
+}
+.badge-soft.bg-warning {
+  background-color: rgba(var(--bs-warning-rgb), 0.25) !important;
+  color: #8a6d3b !important;
+} /* darker text for contrast */
+.badge-soft.bg-danger {
+  background-color: rgba(var(--bs-danger-rgb), 0.18) !important;
+  color: var(--bs-danger) !important;
+}
+.badge-soft.bg-secondary {
+  background-color: rgba(var(--bs-secondary-rgb), 0.18) !important;
+  color: var(--bs-secondary) !important;
+}
+.badge-soft.bg-dark {
+  background-color: rgba(var(--bs-dark-rgb), 0.18) !important;
+  color: var(--bs-dark) !important;
+}
+
+/* Optional: an even larger size helper */
+.badge-soft-lg {
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+}
+
+/* Optional: subtle inner shadow for tactile feel (like your screenshot) */
+.badge-soft {
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+
+/* Hide the native radio but keep it accessible */
+.radio-pill {
+  position: relative;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+/* Hide visually but still focusable for keyboard users */
+.radio-pill input[type='radio'] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Optional: show a focus ring when the hidden input is focused */
+.radio-pill input[type='radio']:focus + .badge-pill {
+  outline: 2px solid #4c9ffe;
+  outline-offset: 2px;
+  border-radius: 999px;
+}
+
+/* Style when selected */
+.radio-pill input[type='radio']:checked + .badge-pill {
+  /* Adjust to match your BadgePill props or className */
+  filter: brightness(0.95);
+  box-shadow: 0 0 0 2px currentColor inset;
+}
