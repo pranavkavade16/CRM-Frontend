@@ -1,8 +1,14 @@
 import useCrmContext from "../context/CrmContext";
+import useUrl from "../customHooks/useUrl";
 import { Link } from "react-router-dom";
 const SalesAgents = () => {
   const { agentsData, agentsError, agentsLoading } = useCrmContext();
   const { leadsData, leadsError, leadsLoading } = useCrmContext();
+  const { data, error, loading, fetchData, updateFilter } = useUrl(
+    window.location.href
+  );
+  console.log("useUrl data", data);
+
   console.log("Agents", agentsData);
 
   if (leadsLoading || agentsLoading) return <p>Loading...</p>;
@@ -65,12 +71,22 @@ const SalesAgents = () => {
                       ).length
                     }
                   </p>
-                  <p>Closed Leads:</p>
+                  <p>
+                    Closed Leads:
+                    {/* {
+                      leadsData?.data?.filter(
+                        (lead) =>
+                          lead.salesAgent._id === agent._id &&
+                          lead.status === "Closed"
+                      ).length
+                    } */}
+                  </p>
                   <p>Conversion Rate: </p>
                 </div>
                 <Link
                   className="btn btn-dark rounded-3 px-3 m-3"
                   to={`/salesAgentDetails/${agent._id}`}
+                  onClick={() => updateFilter("salesAgent", agent._id)}
                 >
                   <i class="bi bi-file-earmark-text"></i> View Details
                 </Link>

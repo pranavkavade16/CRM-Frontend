@@ -1,8 +1,22 @@
 import useLeadsData from "../customHooks/useLeadsData";
 import BarChart from "../components/BarChart";
+import useFetch from "../customHooks/useFetch";
 import PieChartComponent from "../components/PieChartComponent";
+import { useEffect } from "react";
 const Reports = () => {
   const { closedLeadsPerSalesAgent, leadsDataByStatus } = useLeadsData();
+  const {
+    data: closedData,
+    error: closedError,
+    loading: closedLoading,
+    fetchData,
+  } = useFetch("https://crm-backend-sqw3.vercel.app/report/last-week");
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+  console.log(closedData);
+
   return (
     <div className="dashboard-wrapper">
       <h3>Reports</h3>

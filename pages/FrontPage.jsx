@@ -169,7 +169,7 @@ const FrontPage = () => {
       </div>
 
       <div className="mt-5">
-        <LeadsComponent leads={leadsData?.data} />
+        <LeadsComponent />
       </div>
     </div>
   );

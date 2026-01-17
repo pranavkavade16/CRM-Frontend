@@ -11,23 +11,29 @@ import {
 import { useState, useMemo, useEffect } from "react";
 
 const LeadsComponent = ({ leads, pageSize = 10 }) => {
-  const [page, setPage] = useState(1);
-  const { searchedLeads, setSearch } = useSearch(leads);
-  const { setFilter, filteredLeads } = useFilter(searchedLeads);
-  const { sortedLeads, setSortBy } = useSort(filteredLeads);
+  //   const [page, setPage] = useState(1);
+  //   const { searchedLeads, setSearch } = useSearch(leads);
+  const { updateFilter, filteredData, filteredError, filteredLoading } =
+    useFilter();
+  // const { setFilter, filteredLeads } = useFilter(searchedLeads);
+  // const { sortedLeads, setSortBy } = useSort(filteredLeads);
 
-  const totalPages = Math.ceil(leads?.length / pageSize);
+  //   const totalPages = Math.ceil(leads?.length / pageSize);
 
-  const slicedData = useMemo(() => {
-    const start = (page - 1) * pageSize;
-    return sortedLeads.slice(start, start + pageSize);
-  }, [sortedLeads, page]);
+  // const slicedData = useMemo(() => {
+  //   const start = (page - 1) * pageSize;
+  //   return sortedLeads.slice(start, start + pageSize);
+  // }, [sortedLeads, page]);
 
-  const goTo = (p) => setPage(Math.min(Math.max(1, p), totalPages));
+  // const goTo = (p) => setPage(Math.min(Math.max(1, p), totalPages));
 
-  useEffect(() => {
-    setPage(1);
-  }, [searchedLeads, filteredLeads, sortedLeads]);
+  // useEffect(() => {
+  //   setPage(1);
+  // }, [searchedLeads, filteredLeads, sortedLeads]);
+
+  if (filteredError) <p>{filteredError}</p>;
+  if (filteredLoading) <p>Loading....</p>;
+  if (!filteredData) return <p>No leads found</p>;
 
   return (
     <div>
@@ -52,7 +58,7 @@ const LeadsComponent = ({ leads, pageSize = 10 }) => {
 
             <select
               className="form-select bg-light "
-              onChange={(event) => setFilter(event.target.value)}
+              onChange={(event) => updateFilter("status", event.target.value)}
             >
               <option value="">Filter by Status</option>
               <option value="New">New</option>
@@ -64,7 +70,7 @@ const LeadsComponent = ({ leads, pageSize = 10 }) => {
 
             <select
               className="form-select bg-light"
-              onChange={(event) => setFilter(event.target.value)}
+              onChange={(event) => updateFilter("priority", event.target.value)}
             >
               <option value="">Filter by Priorities</option>
               <option value="High">High</option>
@@ -74,13 +80,25 @@ const LeadsComponent = ({ leads, pageSize = 10 }) => {
 
             <select
               className="form-select bg-light"
-              onChange={(event) => setSortBy(event.target.value)}
+              onChange={(event) => {
+                const value = event.target.value;
+
+                const [sort, order] = value.split(":");
+                updateFilter("sort", sort);
+                updateFilter("order", order);
+                console.log(sort);
+                console.log(order);
+              }}
             >
-              <option value="null">Sort by</option>
-              <option value="priorityHigh">Priority - high to low</option>
-              <option value="priorityLow">Priority - low to high</option>
-              <option value="timeHigh">Time to close - high to low</option>
-              <option value="timeLow">Time to close - low to high</option>
+              <option value="">Sort by</option>
+              <option value="priority:desc">Priority - high to low</option>
+              <option value="priority:asc">Priority - low to high</option>
+              <option value="timeToClose:desc">
+                Time to close - high to low
+              </option>
+              <option value="timeToClose:asc">
+                Time to close - low to high
+              </option>
             </select>
           </div>
           <div>
@@ -97,7 +115,7 @@ const LeadsComponent = ({ leads, pageSize = 10 }) => {
                 </tr>
               </thead>
               <tbody>
-                {slicedData.map((lead, index) => (
+                {filteredData?.data?.map((lead, index) => (
                   <>
                     <tr>
                       <td className="truncate">{lead.name.slice(0, 25)}</td>
@@ -139,7 +157,7 @@ const LeadsComponent = ({ leads, pageSize = 10 }) => {
             </table>
           </div>
 
-          <nav aria-label="Pagination">
+          {/* <nav aria-label="Pagination">
             <ul className="pagination pagination-sm">
               <li className={`page-item ${page === 1 ? "disabled" : ""}`}>
                 <button
@@ -189,7 +207,7 @@ const LeadsComponent = ({ leads, pageSize = 10 }) => {
             Showing {(page - 1) * pageSize + 1}–
             {Math.min(page * pageSize, sortedLeads.length)} of{" "}
             {sortedLeads.length}
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
