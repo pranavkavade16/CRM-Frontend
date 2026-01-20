@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const NavBar = () => {
   return (
     <header>
@@ -20,7 +22,9 @@ const NavBar = () => {
           </div>
 
           <div>
-            <button className="btn btn-dark rounded-3">+ Add Lead</button>
+            <Link className="btn btn-dark rounded-3" to="/addLead">
+              + Add Lead
+            </Link>
           </div>
         </div>
       </div>

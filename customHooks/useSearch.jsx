@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 
 const normalize = (value) => (value ?? "").toString().toLowerCase();
 
-const useSearch = (leads = []) => {
+const useSearch = (leads = [], agents = []) => {
   const [search, setSearch] = useState("");
 
   const searchedLeads = useMemo(() => {
@@ -28,7 +28,19 @@ const useSearch = (leads = []) => {
     });
   }, [leads, search]);
 
-  return { search, setSearch, searchedLeads };
+  const searchedAgents = useMemo(() => {
+    const q = normalize(search);
+    if (!q) return agents;
+
+    return agents.filter((agent) => {
+      const name = normalize(agent.name);
+      const email = normalize(agent.email);
+
+      return name.includes(q) || email.includes(q);
+    });
+  });
+
+  return { search, setSearch, searchedLeads, searchedAgents };
 };
 
 export default useSearch;

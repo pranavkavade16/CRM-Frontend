@@ -20,12 +20,11 @@ const useSort = (leads) => {
         return priorityOrder[b.priority] - priorityOrder[a.priority];
       }
 
-      if (sortBy === "timeHigh") {
-        return Number(b.timeToClose) - Number(a.timeToClose);
-      }
-
-      if (sortBy === "timeLow") {
-        return Number(a.timeToClose) - Number(b.timeToClose);
+      if (sort === "timeToClose") {
+        sortedData = leads.sort((a, b) => {
+          const diff = a.timeToClose - b.timeToClose;
+          return order === "desc" ? -diff : diff;
+        });
       }
     });
 

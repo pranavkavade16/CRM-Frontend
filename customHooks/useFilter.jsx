@@ -21,6 +21,7 @@ const useFilter = () => {
 
   const apiUrl = useMemo(() => {
     const queryString = searchParams.toString();
+
     return queryString ? `${baseURL}?${queryString}` : baseURL;
   }, [searchParams]);
 
@@ -35,20 +36,19 @@ const useFilter = () => {
 
   useEffect(() => {
     fetchFilteredData();
-  }, [fetchFilteredData]);
+  }, [apiUrl, fetchFilteredData]);
 
   console.log("Filtered data", filteredData);
 
   const updateFilter = useCallback(
-    (key, value) => {
+    (updates) => {
       setSearchParams((prev) => {
         const params = new URLSearchParams(prev);
 
-        if (value) {
-          params.set(key, value);
-        } else {
-          params.delete(key);
-        }
+        Object.entries(updates).forEach(([key, value]) => {
+          if (value) params.set(key, value);
+          else params.delete(key);
+        });
 
         return params;
       });

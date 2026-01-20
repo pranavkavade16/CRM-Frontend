@@ -1,4 +1,6 @@
 import useFilter from '../customHooks/useFilter';
+import useSort from '../customHooks/useSort';
+import useSearch from '../customHooks/useSearch';
 import BadgePill from './BadgePill';
 import { Link } from 'react-router-dom';
 import {
@@ -7,34 +9,30 @@ import {
   SOURCE_COLORS,
 } from '../utils/badgeMap';
 import { useState, useMemo, useEffect } from 'react';
-import useSearch from '../customHooks/useSearch';
+import useLocalFilter from '../customHooks/useLocalFilter';
 
-const LeadsComponent = ({ pageSize = 10 }) => {
+const LeadsTable = ({ leads, pageSize = 10 }) => {
   const [page, setPage] = useState(1);
+  const data = Array.isArray(leads) ? leads : [];
 
-  const { updateFilter, filteredData, filteredError, filteredLoading } =
-    useFilter();
-  console.log(filteredData);
-
-  const leads = Array.isArray(filteredData.data) ? filteredData.data : [];
-  const { setSearch, searchedLeads } = useSearch(leads);
+  const { searchedLeads, setSearch } = useSearch(data);
+  const { filteredData, updateFilter } = useLocalFilter(searchedLeads);
+  //   const { sortedLeads, setSortBy } = useSort(filteredLeads);
 
   const totalPages = Math.ceil(leads?.length / pageSize);
 
   const slicedData = useMemo(() => {
     const start = (page - 1) * pageSize;
-    return searchedLeads?.slice(start, start + pageSize);
-  }, [searchedLeads, page]);
+    return filteredData.slice(start, start + pageSize);
+  }, [filteredData, page]);
 
   const goTo = (p) => setPage(Math.min(Math.max(1, p), totalPages));
 
   useEffect(() => {
     setPage(1);
-  }, [leads]);
+  }, [searchedLeads, filteredData]);
 
-  if (filteredError) <p>{filteredError}</p>;
-  if (filteredLoading) <p>Loading....</p>;
-  if (!filteredData) return <p>No leads found</p>;
+  if (!leads) return <p>No leads found</p>;
 
   return (
     <div>
@@ -124,7 +122,7 @@ const LeadsComponent = ({ pageSize = 10 }) => {
                           className="badge-soft"
                         />
                       </td>
-                      <td>{lead.salesAgent?.name || 'Lead not assigned'}</td>
+                      <td>{lead.salesAgent.name}</td>
                       <td>
                         <BadgePill
                           text={lead.status}
@@ -203,8 +201,8 @@ const LeadsComponent = ({ pageSize = 10 }) => {
 
           <div className="text-muted small">
             Showing {(page - 1) * pageSize + 1}–
-            {Math.min(page * pageSize, searchedLeads.length)} of
-            {searchedLeads.length}
+            {Math.min(page * pageSize, filteredData.length)} of{' '}
+            {filteredData.length}
           </div>
         </div>
       </div>
@@ -212,4 +210,4 @@ const LeadsComponent = ({ pageSize = 10 }) => {
   );
 };
 
-export default LeadsComponent;
+export default LeadsTable;

@@ -54,9 +54,11 @@ const LeadManagement = () => {
   } = useFetch(
     `https://crm-backend-sqw3.vercel.app/leads/${activeLead?._id}/comments`
   );
-  console.log("comments", commentData);
-
-  console.log(agentsData);
+  useEffect(() => {
+    if (activeLead?._id) {
+      fetchComments();
+    }
+  }, [activeLead?._id, fetchComments]);
 
   const navigate = useNavigate();
 
@@ -66,7 +68,7 @@ const LeadManagement = () => {
         status: activeLead?.status || "",
         priority: activeLead?.priority || "",
         source: activeLead?.source || "",
-        salesAgent: activeLead?.salesAgent._id || "",
+        salesAgent: activeLead?.salesAgent?._id || "",
         timeToClose: String(activeLead?.timeToClose),
       });
     }
@@ -279,7 +281,9 @@ const LeadManagement = () => {
                     <i class="bi bi-person"></i>
                   </strong>
                 </span>
-                <span className="ms-2">{activeLead?.salesAgent.name}</span>
+                <span className="ms-2">
+                  {activeLead?.salesAgent?.name || "Lead not assigned"}
+                </span>
               </p>
             </div>
           </p>
@@ -381,7 +385,7 @@ const LeadManagement = () => {
             <div>
               <div className="row">
                 <div className="col-8">
-                  <div class="card" style={{ width: "760px" }}>
+                  <div class="card" style={{ width: "720px" }}>
                     <div class="card-body">
                       <h5 className="fw-bold mt-2 mb-4">Lead Information</h5>
                       <div className="row">
@@ -586,7 +590,7 @@ const LeadManagement = () => {
           ) : (
             <div className="row">
               <div className="col-8">
-                <div class="card" style={{ width: "760px" }}>
+                <div class="card" style={{ width: "700px" }}>
                   <div class="card-body">
                     <h5 className="fw-bold mt-2 mb-4">Lead Information</h5>
                     <div className="row">
@@ -658,18 +662,21 @@ const LeadManagement = () => {
                     <div className="row">
                       <div className="col-2">
                         <img
-                          src={`https://placehold.co/60x60?text=${activeLead?.salesAgent.name
-                            .trim()
-                            .split()}`}
+                          src={`https://placehold.co/60x60?text=${
+                            activeLead?.salesAgent?.name.trim().split() || ""
+                          }`}
                           alt=""
                           class="rounded-circle m-1 me-2"
                         />
                       </div>
                       <div className="col-10">
                         <div className="mt-2 ms-2">
-                          <h6>{activeLead?.salesAgent.name}</h6>
+                          <h6>
+                            {activeLead?.salesAgent?.name ||
+                              "Lead not assigned"}
+                          </h6>
                           <h6 className="text-muted">
-                            {activeLead?.salesAgent.email}
+                            {activeLead?.salesAgent?.email || ""}
                           </h6>
                         </div>
                       </div>
@@ -771,9 +778,9 @@ const LeadManagement = () => {
                 <div className="row mt-4">
                   <div className="col-1">
                     <img
-                      src={`https://placehold.co/24x24/000000/FFFFFF?text=${activeLead?.salesAgent.name
-                        .trim()
-                        .split()}`}
+                      src={`https://placehold.co/24x24/000000/FFFFFF?text=${
+                        activeLead?.salesAgent?.name.trim().split() || ""
+                      }`}
                       alt="avatar"
                       className="rounded-circle ms-2"
                       style={{ width: 40, height: 40, objectFit: "cover" }}

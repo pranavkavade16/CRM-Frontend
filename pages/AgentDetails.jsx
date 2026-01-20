@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import useCrmContext from "../context/CrmContext";
-import LeadsComponent from "../components/LeadsComponent";
+import LeadsTable from "../components/LeadsTable";
+
 const AgentDetails = () => {
   const { salesAgentId } = useParams();
 
@@ -13,9 +14,6 @@ const AgentDetails = () => {
     leadsError,
     leadsLoading,
   } = useCrmContext();
-
-  console.log(leadsData);
-
   const salesAgent = agentsData?.data?.find(
     (agent) => agent._id === salesAgentId
   );
@@ -23,11 +21,46 @@ const AgentDetails = () => {
   const leadsByAgent = leadsData?.data?.filter(
     (lead) => lead.salesAgent._id === salesAgentId
   );
-  console.log(leadsByAgent);
 
-  if (agentsLoading) return <p>Loading...</p>;
-  if (agentsError) return <p>Error loading data</p>;
-  if (agentsData?.data?.length === 0) return <p>No leads found</p>;
+  const activeLeads = leadsByAgent?.filter(
+    (lead) => lead.status != "Closed"
+  ).length;
+
+  const closedLeads = leadsByAgent?.filter(
+    (lead) => lead.status === "Closed"
+  ).length;
+
+  const totalLeads = activeLeads + closedLeads;
+
+  const conversionRate = Math.round((closedLeads / totalLeads) * 100);
+
+  if (agentsLoading)
+    return (
+      <div className="dashboard-wrapper">
+        <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+          <div className="spinner-border text-dark mb-3" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <p className="text-dark fs-5">Loading...</p>
+        </div>
+      </div>
+    );
+  if (agentsError)
+    return (
+      <div className="dashboard-wrapper">
+        <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+          <p className="text-dark fs-5">Error: {agentsError}</p>
+        </div>
+      </div>
+    );
+  if (!agentsData)
+    return (
+      <div className="dashboard-wrapper">
+        <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+          <p className="text-dark fs-5">No Data Available.</p>
+        </div>
+      </div>
+    );
 
   return (
     <div className="dashboard-wrapper">
@@ -40,17 +73,45 @@ const AgentDetails = () => {
       <h4 className="mt-4 mb-4">
         Sales Agent - <span className="text-danger">{salesAgent?.name}</span>
       </h4>
-      <p>Total leads: {leadsByAgent?.length}</p>
-      <p>
-        Active leads:{" "}
-        {leadsByAgent?.filter((lead) => lead.status != "Closed").length}
-      </p>
-      <p>
-        Closed leads:{" "}
-        {leadsByAgent?.filter((lead) => lead.status === "Closed").length}
-      </p>
-      <p>Conversion Rate: </p>
-      <LeadsComponent leads={leadsByAgent} />
+      <div>
+        <h6>
+          Total leads:{" "}
+          <span
+            className="badge rounded-pill bg-secondary ms-2"
+            style={{ padding: "0.5rem" }}
+          >
+            {totalLeads}
+          </span>
+        </h6>
+      </div>
+      <h6>
+        Active leads:
+        <span
+          className="badge rounded-pill bg-secondary ms-2"
+          style={{ padding: "0.5rem" }}
+        >
+          {activeLeads}
+        </span>
+      </h6>
+      <h6>
+        Closed leads:
+        <span
+          className="badge rounded-pill bg-secondary ms-2"
+          style={{ padding: "0.5rem" }}
+        >
+          {closedLeads}
+        </span>
+      </h6>
+      <h6>
+        Conversion Rate:{" "}
+        <span
+          className="badge rounded-pill bg-success ms-2"
+          style={{ padding: "0.5rem" }}
+        >
+          {conversionRate} %
+        </span>
+      </h6>
+      <LeadsTable leads={leadsByAgent} />
     </div>
   );
 };

@@ -1,19 +1,37 @@
 import useCrmContext from "../context/CrmContext";
-import useUrl from "../customHooks/useUrl";
+
 import { Link } from "react-router-dom";
 const SalesAgents = () => {
   const { agentsData, agentsError, agentsLoading } = useCrmContext();
   const { leadsData, leadsError, leadsLoading } = useCrmContext();
-  const { data, error, loading, fetchData, updateFilter } = useUrl(
-    window.location.href
-  );
-  console.log("useUrl data", data);
 
-  console.log("Agents", agentsData);
-
-  if (leadsLoading || agentsLoading) return <p>Loading...</p>;
-  if (leadsError || agentsError) return <p>Error loading data</p>;
-  if (leadsData.count === 0) return <p>No leads found</p>;
+  if (leadsLoading || agentsLoading)
+    return (
+      <div className="dashboard-wrapper">
+        <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+          <div className="spinner-border text-dark mb-3" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <p className="text-dark fs-5">Loading...</p>
+        </div>
+      </div>
+    );
+  if (leadsError || agentsError)
+    return (
+      <div className="dashboard-wrapper">
+        <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+          <p className="text-dark fs-5">Error: {leadsError || agentsError}</p>
+        </div>
+      </div>
+    );
+  if (leadsData.count === 0 || !agentsData)
+    return (
+      <div className="dashboard-wrapper">
+        <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+          <p className="text-dark fs-5">No Data Available.</p>
+        </div>
+      </div>
+    );
 
   return (
     <div className="dashboard-wrapper">
@@ -38,8 +56,12 @@ const SalesAgents = () => {
                     <img
                       src={`https://placehold.co/50x50/000000/FFFFFF?text=${agent.name
                         .trim()
-                        .split()}`}
-                      alt=""
+                        .split(" ")
+                        .map((word) => word[0])
+                        .slice(0, 2)
+                        .join("")
+                        .toUpperCase()}`}
+                      alt="agentName"
                       class="rounded-circle m-1 me-2"
                     />
                     <div className="mt-3 m-1 ">
@@ -62,31 +84,60 @@ const SalesAgents = () => {
                     </p>
                   </div>
                   <hr />
-
-                  <p>
-                    Active Leads:{" "}
-                    {
-                      leadsData.data.filter(
-                        (lead) => lead.salesAgent == agent._id
-                      ).length
-                    }
-                  </p>
-                  <p>
-                    Closed Leads:
-                    {/* {
-                      leadsData?.data?.filter(
-                        (lead) =>
-                          lead.salesAgent._id === agent._id &&
-                          lead.status === "Closed"
-                      ).length
-                    } */}
-                  </p>
-                  <p>Conversion Rate: </p>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <p>Active Leads:</p>
+                    <span
+                      className="badge rounded-pill bg-secondary badge-soft mb-0"
+                      style={{ padding: "0.5rem" }}
+                    >
+                      {
+                        leadsData?.data?.filter(
+                          (lead) =>
+                            lead.salesAgent._id === agent._id &&
+                            lead.status != "Closed"
+                        ).length
+                      }
+                    </span>
+                  </div>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <p>Closed Leads:</p>
+                    <span
+                      className="badge rounded-pill bg-secondary badge-soft mb-0"
+                      style={{ padding: "0.5rem" }}
+                    >
+                      {
+                        leadsData?.data?.filter(
+                          (lead) =>
+                            lead.salesAgent._id === agent._id &&
+                            lead.status === "Closed"
+                        ).length
+                      }
+                    </span>
+                  </div>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <p>Conversion Rate:</p>
+                    <span
+                      className="badge rounded-pill bg-success mb-0"
+                      style={{ padding: "0.5rem" }}
+                    >
+                      {Math.round(
+                        (leadsData?.data?.filter(
+                          (lead) =>
+                            lead.salesAgent._id === agent._id &&
+                            lead.status === "Closed"
+                        ).length /
+                          leadsData?.data?.filter(
+                            (lead) => lead.salesAgent._id === agent._id
+                          ).length) *
+                          100
+                      )}{" "}
+                      %
+                    </span>
+                  </div>
                 </div>
                 <Link
                   className="btn btn-dark rounded-3 px-3 m-3"
                   to={`/salesAgentDetails/${agent._id}`}
-                  onClick={() => updateFilter("salesAgent", agent._id)}
                 >
                   <i class="bi bi-file-earmark-text"></i> View Details
                 </Link>

@@ -3,15 +3,39 @@ import LeadsComponent from "../components/LeadsComponent";
 import PieChartComponent from "../components/PieChartComponent";
 import BarChart from "../components/BarChart";
 import useLeadsData from "../customHooks/useLeadsData";
+import LeadsTable from "../components/LeadsTable";
 const FrontPage = () => {
   const { leadsData, leadsError, leadsLoading } = useCrmContext();
   const { agentsData, agentsError, agentsLoading } = useCrmContext();
   const { closedLeadsPerSalesAgent, leadsDataByStatus } = useLeadsData();
-  console.log(leadsData);
 
-  if (leadsLoading || agentsLoading) return <p>Loading...</p>;
-  if (leadsError || agentsError) return <p>Error loading data</p>;
-  if (leadsData.count === 0) return <p>No leads found</p>;
+  if (leadsLoading || agentsLoading)
+    return (
+      <div className="dashboard-wrapper">
+        <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+          <div className="spinner-border text-dark mb-3" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <p className="text-dark fs-5">Loading...</p>
+        </div>
+      </div>
+    );
+  if (leadsError || agentsError)
+    return (
+      <div className="dashboard-wrapper">
+        <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+          <p className="text-dark fs-5">Error: {leadsError || agentsError}</p>
+        </div>
+      </div>
+    );
+  if (leadsData.count === 0)
+    return (
+      <div className="dashboard-wrapper">
+        <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+          <p className="text-dark fs-5">No Data Available.</p>
+        </div>
+      </div>
+    );
 
   return (
     <div className="dashboard-wrapper">

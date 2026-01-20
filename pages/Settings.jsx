@@ -11,13 +11,21 @@ import {
 } from "../utils/badgeMap";
 import { useState, useMemo, useEffect } from "react";
 import { Link } from "react-router-dom";
+import useLocalFilter from "../customHooks/useLocalFilter";
 
 const Settings = () => {
   const [page, setPage] = useState(1);
   const { leadsData, leadsError, leadsLoading, fetchLeads } = useCrmContext();
-  const { searchedLeads, setSearch } = useSearch(leadsData?.data);
-  const { setFilter, filteredLeads } = useFilter(searchedLeads);
-  const { sortedLeads, setSortBy } = useSort(filteredLeads);
+  const { agentsData, agentsError, agentsLoading, fetchAgents } =
+    useCrmContext();
+  console.log(agentsData);
+
+  const { searchedLeads, setSearch, searchedAgents } = useSearch(
+    leadsData?.data,
+    agentsData?.data
+  );
+  const { filteredData, updateFilter } = useLocalFilter(searchedLeads);
+  const { sortedLeads, setSortBy } = useSort(filteredData);
 
   const pageSize = 10;
   const totalPages = Math.ceil(leadsData?.data?.length / pageSize);
@@ -31,9 +39,79 @@ const Settings = () => {
 
   useEffect(() => {
     setPage(1);
-  }, [searchedLeads, filteredLeads, sortedLeads]);
-  const { agentsData, agentsError, agentsLoading, fetchAgents } =
-    useCrmContext();
+  }, [searchedLeads, filteredData, sortedLeads]);
+
+  const agentStats = useMemo(() => {
+    if (!leadsData?.data) return {};
+
+    return leadsData.data.reduce((acc, lead) => {
+      const name = lead.salesAgent.name;
+
+      if (!acc[name]) {
+        acc[name] = {
+          total: 0,
+          active: 0,
+          closed: 0,
+        };
+      }
+
+      acc[name].total += 1;
+
+      if (lead.status === "Closed") {
+        acc[name].closed += 1;
+      } else {
+        acc[name].active += 1;
+      }
+
+      return acc;
+    }, {});
+  }, [leadsData?.data]);
+
+  const handleDeleteAgent = async (agentId) => {
+    try {
+      const response = await fetch(
+        `https://crm-backend-sqw3.vercel.app/salesAgent/delete/${agentId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!response.ok) {
+        throw "Failed to delete the sales agent.";
+      }
+
+      const deletedSalesAgent = await response.json();
+      console.log("Sales agent deleted successfully.");
+    } catch (error) {
+      console.log("Failed to delete the sales agent", error.message);
+    } finally {
+      fetchAgents();
+    }
+  };
+
+  const handleDeleteLead = async (leadId) => {
+    try {
+      //   setIsSubmitting(true);
+      const response = await fetch(
+        `https://crm-backend-sqw3.vercel.app/leads/${leadId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!response.ok) {
+        throw "Failed to delete the lead";
+      }
+
+      const deletedLead = await response.json();
+      console.log("Lead deleted successfully.", deletedLead);
+    } catch (error) {
+      console.log("Error in deleting the lead.", error.message);
+    } finally {
+      //   setIsSubmitting(false);
+      fetchLeads();
+    }
+  };
 
   if (leadsLoading || agentsLoading) return <p>Loading...</p>;
   if (leadsError || agentsError) return <p>Error loading data</p>;
@@ -60,8 +138,8 @@ const Settings = () => {
                 <input
                   type="text"
                   className="form-control bg-light"
-                  placeholder="Search leads..."
-                  //   onChange={(event) => setSearch(event.target.value)}
+                  placeholder="Search sales agents"
+                  onChange={(event) => setSearch(event.target.value)}
                 />
               </div>
             </div>
@@ -73,36 +151,47 @@ const Settings = () => {
                     <th scope="col">Total Leads</th>
                     <th scope="col">Active Leads</th>
                     <th scope="col">Closed Leads</th>
-                    <th></th>
+                    <th scope="col">Conversion Rate</th>
                     <th></th>
                   </tr>
                 </thead>
                 <tbody>
-                  {agentsData?.data?.map((agent, index) => (
-                    <>
-                      <tr>
+                  {searchedAgents?.map((agent) => {
+                    const stats = agentStats[agent.name] || {
+                      total: 0,
+                      active: 0,
+                      closed: 0,
+                    };
+
+                    const conversionRate =
+                      stats.total === 0
+                        ? "0%"
+                        : `${Math.round((stats.closed / stats.total) * 100)}%`;
+
+                    return (
+                      <tr key={agent._id}>
                         <td>{agent.name}</td>
+                        <td>{stats.total}</td>
+                        <td>{stats.active}</td>
+                        <td>{stats.closed}</td>
+                        <td>{conversionRate}</td>
                         <td>
-                          {
-                            leadsData?.data?.filter(
-                              (lead) => lead.salesAgent == agent._id
-                            ).length
-                          }
-                        </td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>
-                          <button className="btn btn-outline-dark btn-sm">
+                          <Link
+                            className="btn btn-outline-dark btn-sm"
+                            to={`/salesAgentDetails/${agent._id}`}
+                          >
                             View Details
-                          </button>
-                          <button className="btn btn-outline-dark btn-sm ms-2">
+                          </Link>
+                          <Link
+                            className="btn btn-outline-dark btn-sm ms-2"
+                            onClick={() => handleDeleteAgent(agent._id)}
+                          >
                             Delete
-                          </button>
+                          </Link>
                         </td>
                       </tr>
-                    </>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -131,7 +220,9 @@ const Settings = () => {
 
               <select
                 className="form-select bg-light "
-                onChange={(event) => setFilter(event.target.value)}
+                onChange={(event) =>
+                  updateFilter({ status: event.target.value })
+                }
               >
                 <option value="">Filter by Status</option>
                 <option value="New">New</option>
@@ -143,7 +234,9 @@ const Settings = () => {
 
               <select
                 className="form-select bg-light"
-                onChange={(event) => setFilter(event.target.value)}
+                onChange={(event) =>
+                  updateFilter({ priority: event.target.value })
+                }
               >
                 <option value="">Filter by Priorities</option>
                 <option value="High">High</option>
@@ -210,7 +303,10 @@ const Settings = () => {
                           >
                             Edit
                           </Link>
-                          <button className="btn btn-outline-dark btn-sm ms-2">
+                          <button
+                            className="btn btn-outline-dark btn-sm ms-2"
+                            onClick={() => handleDeleteLead(lead._id)}
+                          >
                             Delete
                           </button>
                         </td>

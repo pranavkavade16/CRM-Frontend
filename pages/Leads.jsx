@@ -14,7 +14,7 @@ const Leads = () => {
         Manage and track all your leads through the sales pipeline.
       </p>
       <div>
-        <LeadsComponent leads={leadsData?.data} />
+        <LeadsComponent />
       </div>
     </div>
   );

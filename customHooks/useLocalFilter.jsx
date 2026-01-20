@@ -1,0 +1,83 @@
+import { useMemo, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
+
+const useLocalFilter = (data = []) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const filters = useMemo(
+    () => ({
+      status: searchParams.get("status") || "",
+      priority: searchParams.get("priority") || "",
+      sort: searchParams.get("sort") || "",
+      order: searchParams.get("order") || "",
+    }),
+    [searchParams]
+  );
+
+  // Apply filtering + sorting locally
+  const filteredData = useMemo(() => {
+    let result = [...data];
+
+    // STATUS FILTER
+    if (filters.status) {
+      result = result.filter((lead) => lead.status === filters.status);
+    }
+
+    // PRIORITY FILTER
+    if (filters.priority) {
+      result = result.filter((lead) => lead.priority === filters.priority);
+    }
+
+    // SORTING
+    if (filters.sort) {
+      result.sort((a, b) => {
+        if (filters.sort === "priority") {
+          const map = { High: 3, Medium: 2, Low: 1 };
+          return filters.order === "asc"
+            ? map[a.priority] - map[b.priority]
+            : map[b.priority] - map[a.priority];
+        }
+
+        if (filters.sort === "timeToClose") {
+          return filters.order === "asc"
+            ? a.timeToClose - b.timeToClose
+            : b.timeToClose - a.timeToClose;
+        }
+
+        return 0;
+      });
+    }
+
+    return result;
+  }, [data, filters]);
+
+  // Update URL params
+  const updateFilter = useCallback(
+    (updates) => {
+      setSearchParams((prev) => {
+        const params = new URLSearchParams(prev);
+
+        Object.entries(updates).forEach(([key, value]) => {
+          value ? params.set(key, value) : params.delete(key);
+        });
+
+        return params;
+      });
+    },
+    [setSearchParams]
+  );
+
+  // Clear all filters
+  const clearFilters = useCallback(() => {
+    setSearchParams({});
+  }, [setSearchParams]);
+
+  return {
+    filters,
+    filteredData,
+    updateFilter,
+    clearFilters,
+  };
+};
+
+export default useLocalFilter;

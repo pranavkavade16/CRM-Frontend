@@ -1,4 +1,4 @@
-import useCrmContext from "../context/CrmContext";
+import useCrmContext from '../context/CrmContext';
 
 export const useLeadsData = () => {
   const { leadsData, leadsError, leadsLoading } = useCrmContext();
@@ -6,7 +6,7 @@ export const useLeadsData = () => {
   const leads = leadsData?.data ?? [];
 
   const closedCountByAgent = leads
-    .filter((lead) => lead.status === "Closed")
+    .filter((lead) => lead.status === 'Closed')
     .reduce((acc, lead) => {
       const agentId = lead.salesAgent?._id;
       const agentName = lead.salesAgent?.name;
@@ -37,7 +37,7 @@ export const useLeadsData = () => {
     return acc;
   }, {});
 
-  console.log("leads by status", leadsByStatus);
+  console.log('leads by status', leadsByStatus);
 
   const labelsOfLeadsData = Object.values(leadsByStatus).map(
     (item) => item.leadStatus
@@ -51,30 +51,30 @@ export const useLeadsData = () => {
     labels,
     datasets: [
       {
-        label: "Closed Leads",
+        label: 'Closed Leads',
         data: values,
-        backgroundColor: "#22C55E",
-        borderColor: "#16A34A",
+        backgroundColor: '#22C55E',
+        borderColor: '#16A34A',
         borderWidth: 1,
       },
     ],
   };
 
   const colour = {
-    contacted: "#0dcaf0",
-    qualified: "#198754",
-    "Proposal Sent": "#ffc107",
-    closed: "#6c757d",
-    new: "#0d6efd",
+    contacted: '#0dcaf0',
+    qualified: '#198754',
+    'Proposal Sent': '#ffc107',
+    closed: '#6c757d',
+    new: '#0d6efd',
   };
 
   const leadsDataByStatus = {
     labels: labelsOfLeadsData,
     datasets: [
       {
-        label: "Lead Status Distribution",
+        label: 'Lead Status Distribution',
         data: valesOfLeadsData,
-        backgroundColor: "#0047AB",
+        backgroundColor: '#0047AB',
       },
     ],
   };
