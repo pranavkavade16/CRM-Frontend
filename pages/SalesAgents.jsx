@@ -49,8 +49,11 @@ const SalesAgents = () => {
       <div>
         <div className="row g-4">
           {agentsData?.data?.map((agent, index) => (
-            <div className="col-xl-4 col-lg-4 col-md-8">
-              <div class="card">
+            <div
+              key={agent._id}
+              className="col-xl-4 col-lg-4 col-md-6 col-sm-12"
+            >
+              <div class="card h-100">
                 <div class="card-body">
                   <div className="d-flex">
                     <img

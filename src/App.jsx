@@ -3,7 +3,7 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { CrmProvider } from "../context/CrmContext";
-import { BrowserRouter, Route, Router, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SideBar from "../components/SideBar";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import Leads from "../pages/Leads";
@@ -16,6 +16,7 @@ import AddSalesAgent from "../pages/AddSalesAgent";
 import AgentDetails from "../pages/AgentDetails";
 import Reports from "../pages/Reports";
 import Settings from "../pages/Settings";
+import Toast from "../components/Toast";
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
             <Route path="/reports" element={<Reports />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
+          <Toast />
         </BrowserRouter>
       </CrmProvider>
     </>

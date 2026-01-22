@@ -5,15 +5,8 @@ import LeadsTable from "../components/LeadsTable";
 const AgentDetails = () => {
   const { salesAgentId } = useParams();
 
-  const {
-    agentsData,
-    agentsError,
-    agentsLoading,
+  const { agentsData, agentsError, agentsLoading, leadsData } = useCrmContext();
 
-    leadsData,
-    leadsError,
-    leadsLoading,
-  } = useCrmContext();
   const salesAgent = agentsData?.data?.find(
     (agent) => agent._id === salesAgentId
   );
@@ -23,7 +16,7 @@ const AgentDetails = () => {
   );
 
   const activeLeads = leadsByAgent?.filter(
-    (lead) => lead.status != "Closed"
+    (lead) => lead.status !== "Closed"
   ).length;
 
   const closedLeads = leadsByAgent?.filter(
@@ -31,34 +24,28 @@ const AgentDetails = () => {
   ).length;
 
   const totalLeads = activeLeads + closedLeads;
-
-  const conversionRate = Math.round((closedLeads / totalLeads) * 100);
+  const conversionRate = totalLeads
+    ? Math.round((closedLeads / totalLeads) * 100)
+    : 0;
 
   if (agentsLoading)
     return (
-      <div className="dashboard-wrapper">
-        <div className="d-flex flex-column justify-content-center align-items-center vh-100">
-          <div className="spinner-border text-dark mb-3" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-          <p className="text-dark fs-5">Loading...</p>
-        </div>
+      <div className="dashboard-wrapper d-flex justify-content-center align-items-center vh-100">
+        <div className="spinner-border text-dark" />
       </div>
     );
+
   if (agentsError)
     return (
-      <div className="dashboard-wrapper">
-        <div className="d-flex flex-column justify-content-center align-items-center vh-100">
-          <p className="text-dark fs-5">Error: {agentsError}</p>
-        </div>
+      <div className="dashboard-wrapper text-center">
+        <p>Error: {agentsError}</p>
       </div>
     );
+
   if (!agentsData)
     return (
-      <div className="dashboard-wrapper">
-        <div className="d-flex flex-column justify-content-center align-items-center vh-100">
-          <p className="text-dark fs-5">No Data Available.</p>
-        </div>
+      <div className="dashboard-wrapper text-center">
+        <p>No Data Available.</p>
       </div>
     );
 
@@ -70,12 +57,15 @@ const AgentDetails = () => {
         sales agent.
       </p>
       <hr />
+
       <h4 className="mt-4 mb-4">
-        Sales Agent - <span className="text-danger">{salesAgent?.name}</span>
+        Sales Agent – <span className="text-danger">{salesAgent?.name}</span>
       </h4>
-      <div>
-        <h6>
-          Total leads:{" "}
+
+      {/* Stats (responsive wrapper) */}
+      <div className="d-flex flex-wrap gap-3 mb-4">
+        <h6 className="mb-0">
+          Total leads:
           <span
             className="badge rounded-pill bg-secondary ms-2"
             style={{ padding: "0.5rem" }}
@@ -83,36 +73,42 @@ const AgentDetails = () => {
             {totalLeads}
           </span>
         </h6>
+
+        <h6 className="mb-0">
+          Active leads:
+          <span
+            className="badge rounded-pill bg-secondary ms-2"
+            style={{ padding: "0.5rem" }}
+          >
+            {activeLeads}
+          </span>
+        </h6>
+
+        <h6 className="mb-0">
+          Closed leads:
+          <span
+            className="badge rounded-pill bg-secondary ms-2"
+            style={{ padding: "0.5rem" }}
+          >
+            {closedLeads}
+          </span>
+        </h6>
+
+        <h6 className="mb-0">
+          Conversion Rate:
+          <span
+            className="badge rounded-pill bg-success ms-2"
+            style={{ padding: "0.5rem" }}
+          >
+            {conversionRate} %
+          </span>
+        </h6>
       </div>
-      <h6>
-        Active leads:
-        <span
-          className="badge rounded-pill bg-secondary ms-2"
-          style={{ padding: "0.5rem" }}
-        >
-          {activeLeads}
-        </span>
-      </h6>
-      <h6>
-        Closed leads:
-        <span
-          className="badge rounded-pill bg-secondary ms-2"
-          style={{ padding: "0.5rem" }}
-        >
-          {closedLeads}
-        </span>
-      </h6>
-      <h6>
-        Conversion Rate:{" "}
-        <span
-          className="badge rounded-pill bg-success ms-2"
-          style={{ padding: "0.5rem" }}
-        >
-          {conversionRate} %
-        </span>
-      </h6>
+
+      {/* Leads table (already responsive) */}
       <LeadsTable leads={leadsByAgent} />
     </div>
   );
 };
+
 export default AgentDetails;

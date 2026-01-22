@@ -9,6 +9,12 @@ export default useCrmContext;
 
 export function CrmProvider({ children }) {
   const [leads, setLeads] = useState([]);
+  const [toastMessage, setToastMessage] = useState({
+    visible: false,
+    message: "",
+    title: "Notification",
+    id: 0,
+  });
 
   const {
     data: leadsData,
@@ -39,6 +45,14 @@ export function CrmProvider({ children }) {
     fetchAgents();
   }, [fetchAgents]);
 
+  const showToast = (message, title = "Notification") => {
+    setToastMessage({ visible: true, message, title, id: Date.now() });
+  };
+
+  const hideToast = () => {
+    setToastMessage((prev) => ({ ...prev, visible: false }));
+  };
+
   return (
     <CrmContext.Provider
       value={{
@@ -59,6 +73,11 @@ export function CrmProvider({ children }) {
         commentError,
         commentLoading,
         fetchComments,
+
+        toastMessage,
+        setToastMessage,
+        hideToast,
+        showToast,
       }}
     >
       {children}

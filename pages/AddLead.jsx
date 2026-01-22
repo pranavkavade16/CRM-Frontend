@@ -18,40 +18,26 @@ const AddLead = () => {
     timeToClose: "",
     priority: "Medium",
   });
+
+  const [tagsInput, setTagsInput] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
   const {
     agentsData,
     agentsError,
     agentsLoading,
-    leads,
     setLeads,
     fetchLeads,
+    showToast,
+    toastMessage,
   } = useCrmContext();
-  console.log(leads);
-
-  console.log(formData);
 
   const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   setFormData({
-  //     name: "",
-  //     source: "",
-  //     salesAgent: "",
-  //     status: "New",
-  //     tags: [],
-  //     timeToClose: "",
-  //     priority: "Medium",
-  //   });
-  // }, [toggleEdit, activeLead]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
-  const [tagsInput, setTagsInput] = useState("");
-  console.log(tagsInput);
 
   const commitTags = () => {
     const tags = tagsInput
@@ -63,44 +49,34 @@ const AddLead = () => {
 
   const handleAddLead = async () => {
     if (isSubmitting) return;
+
+    const { name, source, salesAgent, tags, timeToClose } = formData;
+    if (!name || !source || !salesAgent || !tags || !timeToClose) {
+      showToast("Please fill all the required fields.");
+      return;
+    }
+
     try {
       setIsSubmitting(true);
-
-      const { name, source, salesAgent, tags, timeToClose } = formData;
-
-      if (!name || !source || !salesAgent || !tags || !timeToClose) {
-        alert("Please fill all the required fields.");
-        setIsSubmitting(false);
-        return;
-      }
-
-      const payload = { ...formData };
 
       const response = await fetch(
         "https://crm-backend-sqw3.vercel.app/leads",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
+          body: JSON.stringify(formData),
         }
       );
 
-      if (!response.ok) {
-        console.log("Failed to add the lead.");
-      }
-
       const addedLead = await response.json();
-
       setLeads((prev) => [...prev, addedLead]);
-      console.log("lead added sucessfully", addedLead);
-    } catch (error) {
-      console.log("Error adding the lead", error.message);
+      showToast("Lead added successfully");
+    } catch (err) {
+      console.log(err);
     } finally {
       setIsSubmitting(false);
       fetchLeads();
-      setTimeout(() => {
-        navigate("/leads");
-      }, 1000);
+      navigate("/leads");
     }
   };
 
@@ -120,9 +96,10 @@ const AddLead = () => {
     "Closed",
   ];
   const priorityData = ["High", "Medium", "Low"];
+
   if (agentsLoading) return <p>Loading...</p>;
   if (agentsError) return <p>Error loading data</p>;
-  if (!agentsData) return <p>No leads found</p>;
+
   return (
     <div className="dashboard-wrapper">
       <h3>New lead</h3>
@@ -130,161 +107,160 @@ const AddLead = () => {
         Add a new lead to your CRM and start tracking their progress.
       </p>
       <hr />
+
+      {/* Lead Name */}
       <div className="m-2">
-        <label htmlFor="name" className="form-label ">
+        <label className="form-label">
           <strong>Lead Name:</strong>
         </label>
-        <div class="input-group mb-3 w-50">
+        <div className="input-group mb-3 w-50 w-mobile-100">
           <input
             type="text"
-            class="form-control"
+            className="form-control"
             name="name"
             placeholder="Lead Name"
-            aria-label="Lead Name"
             value={formData.name}
-            aria-describedby="basic-addon1"
             onChange={handleChange}
           />
         </div>
       </div>
+
+      {/* Source */}
       <div className="m-2">
-        <label htmlFor="source" className="form-label ">
+        <label className="form-label">
           <strong>Source:</strong>
         </label>
-        <div role="radiogroup" aria-label="Source">
-          {sourceData.map((source) => {
-            const isSelected = formData.source === source;
-            return (
-              <label key={source} className="radio-pill">
-                <input
-                  type="radio"
-                  name="source"
-                  value={source}
-                  checked={isSelected}
-                  onChange={handleChange}
-                />
-                <BadgePill
-                  text={source}
-                  color={SOURCE_COLORS[source]}
-                  className="badge-pill badge-soft"
-                />
-              </label>
-            );
-          })}
+        <div role="radiogroup" className="pill-wrap">
+          {sourceData.map((source) => (
+            <label key={source} className="radio-pill">
+              <input
+                type="radio"
+                name="source"
+                value={source}
+                checked={formData.source === source}
+                onChange={handleChange}
+              />
+              <BadgePill
+                text={source}
+                color={SOURCE_COLORS[source]}
+                className="badge-pill badge-soft"
+              />
+            </label>
+          ))}
         </div>
       </div>
+
+      {/* Sales Agent */}
       <div className="m-2 mt-3">
-        <label htmlFor="salesAgent" className="form-label ">
+        <label className="form-label">
           <strong>Sales Agent:</strong>
         </label>
         <select
-          class="form-select w-50"
-          aria-label="Default select example"
+          className="form-select w-50 w-mobile-100"
           name="salesAgent"
           value={formData.salesAgent}
           onChange={handleChange}
         >
+          <option value="">Select Agent</option>
           {agentsData?.data?.map((agent) => (
-            <option value={agent._id}>{agent.name}</option>
+            <option key={agent._id} value={agent._id}>
+              {agent.name}
+            </option>
           ))}
         </select>
       </div>
+
+      {/* Status */}
       <div className="m-2">
-        <label htmlFor="status" className="form-label ">
+        <label className="form-label">
           <strong>Status:</strong>
         </label>
-        <div role="radiogroup" aria-label="Status">
-          {statusData.map((status) => {
-            const isSelected = formData.status === status;
-            return (
-              <label key={status} className="radio-pill">
-                <input
-                  type="radio"
-                  name="status"
-                  value={status}
-                  checked={isSelected}
-                  onChange={handleChange}
-                />
-                <BadgePill
-                  text={status}
-                  color={STATUS_COLORS[status]}
-                  className="badge-pill badge-soft"
-                />
-              </label>
-            );
-          })}
+        <div role="radiogroup" className="pill-wrap">
+          {statusData.map((status) => (
+            <label key={status} className="radio-pill">
+              <input
+                type="radio"
+                name="status"
+                value={status}
+                checked={formData.status === status}
+                onChange={handleChange}
+              />
+              <BadgePill
+                text={status}
+                color={STATUS_COLORS[status]}
+                className="badge-pill badge-soft"
+              />
+            </label>
+          ))}
         </div>
-        <div className="mt-3">
-          <label htmlFor="tags" className="form-label ">
-            <strong>Tags:</strong>
-          </label>
-          <div class="input-group w-50">
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Tags"
-              aria-label="Tags"
-              aria-describedby="basic-addon1"
-              name="tags"
-              value={tagsInput}
-              onChange={(e) => setTagsInput(e.target.value)}
-              onBlur={commitTags}
-            />
-          </div>
+      </div>
+
+      {/* Tags */}
+      <div className="m-2 mt-3">
+        <label className="form-label">
+          <strong>Tags:</strong>
+        </label>
+        <div className="input-group w-50 w-mobile-100">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Tags"
+            value={tagsInput}
+            onChange={(e) => setTagsInput(e.target.value)}
+            onBlur={commitTags}
+          />
         </div>
-        <div className="mt-3">
-          <label htmlFor="timeToClose" className="form-label ">
-            <strong>Time to close:</strong>
-          </label>
-          <div class="input-group mb-3 w-50">
-            <input
-              type="number"
-              class="form-control"
-              placeholder="Days"
-              aria-label="Days"
-              aria-describedby="basic-addon1"
-              name="timeToClose"
-              value={formData.timeToClose}
-              onChange={handleChange}
-            />
-          </div>
+      </div>
+
+      {/* Time to close */}
+      <div className="m-2 mt-3">
+        <label className="form-label">
+          <strong>Time to close:</strong>
+        </label>
+        <div className="input-group w-50 w-mobile-100">
+          <input
+            type="number"
+            className="form-control"
+            name="timeToClose"
+            value={formData.timeToClose}
+            onChange={handleChange}
+          />
         </div>
-        <div className="mt-3">
-          <label htmlFor="priority" className="form-label ">
-            <strong>Priority:</strong>
-          </label>
-          <div role="radiogroup" aria-label="Priority">
-            {priorityData.map((priority) => {
-              const isSelected = formData.priority === priority;
-              return (
-                <label key={priority} className="radio-pill">
-                  <input
-                    type="radio"
-                    name="priority"
-                    value={priority}
-                    checked={isSelected}
-                    onChange={handleChange}
-                  />
-                  <BadgePill
-                    text={priority}
-                    color={PRIORITY_COLORS[priority]}
-                    className="badge-pill badge-soft"
-                  />
-                </label>
-              );
-            })}
-          </div>
+      </div>
+
+      {/* Priority */}
+      <div className="m-2 mt-3">
+        <label className="form-label">
+          <strong>Priority:</strong>
+        </label>
+        <div role="radiogroup" className="pill-wrap">
+          {priorityData.map((priority) => (
+            <label key={priority} className="radio-pill">
+              <input
+                type="radio"
+                name="priority"
+                value={priority}
+                checked={formData.priority === priority}
+                onChange={handleChange}
+              />
+              <BadgePill
+                text={priority}
+                color={PRIORITY_COLORS[priority]}
+                className="badge-pill badge-soft"
+              />
+            </label>
+          ))}
         </div>
-        <div className="mt-3">
-          <button
-            type="submit"
-            className="btn btn-primary"
-            disabled={isSubmitting}
-            onClick={handleAddLead}
-          >
-            {isSubmitting ? "Saving..." : "Save"}
-          </button>
-        </div>
+      </div>
+
+      <div className="m-2 mt-4">
+        <button
+          className="btn btn-primary"
+          disabled={isSubmitting}
+          onClick={handleAddLead}
+        >
+          {isSubmitting ? "Saving..." : "Save"}
+        </button>
       </div>
     </div>
   );

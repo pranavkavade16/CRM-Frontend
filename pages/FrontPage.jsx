@@ -3,7 +3,7 @@ import LeadsComponent from "../components/LeadsComponent";
 import PieChartComponent from "../components/PieChartComponent";
 import BarChart from "../components/BarChart";
 import useLeadsData from "../customHooks/useLeadsData";
-import LeadsTable from "../components/LeadsTable";
+
 const FrontPage = () => {
   const { leadsData, leadsError, leadsLoading } = useCrmContext();
   const { agentsData, agentsError, agentsLoading } = useCrmContext();
@@ -46,7 +46,7 @@ const FrontPage = () => {
 
       <div className="row g-4">
         {/* CARD 1 */}
-        <div className="col-xl-3 col-lg-3 col-md-6">
+        <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12">
           <div className="card dashboard-card h-100 shadow-sm rounded-4">
             <div className="card-body d-flex justify-content-between align-items-center">
               <div>
@@ -73,7 +73,7 @@ const FrontPage = () => {
         </div>
 
         {/* CARD 2 */}
-        <div className="col-xl-3 col-lg-3 col-md-6">
+        <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12">
           <div className="card dashboard-card h-100 shadow-sm rounded-4">
             <div className="card-body d-flex justify-content-between align-items-center">
               <div>
@@ -102,7 +102,7 @@ const FrontPage = () => {
         </div>
 
         {/* CARD 3 */}
-        <div className="col-xl-3 col-lg-3 col-md-6">
+        <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12">
           <div className="card dashboard-card h-100 shadow-sm rounded-4">
             <div className="card-body d-flex justify-content-between align-items-center">
               <div>
@@ -136,7 +136,7 @@ const FrontPage = () => {
         </div>
 
         {/* CARD 4 */}
-        <div className="col-xl-3 col-lg-3 col-md-6">
+        <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12">
           <div className="card dashboard-card h-100 shadow-sm rounded-4">
             <div className="card-body d-flex justify-content-between align-items-center">
               <div>
@@ -168,24 +168,28 @@ const FrontPage = () => {
 
       <div className="row g-4">
         {/* Left card */}
-        <div className="col-xl-5 col-lg-5 col-md-5">
+        <div className="col-xl-5 col-lg-5 col-md-12 col-sm-12">
           <div className="card dashboard-card h-100 shadow-sm rounded-4 mt-4">
             <div className="m-4">
               <h5 className="mb-4">Lead Pipeline Status</h5>
-              <div className="d-flex justify-content-center align-items-center">
-                <PieChartComponent />
+              <div className="d-flex justify-content-center align-items-center w-100">
+                <div style={{ width: "100%", maxWidth: "320px" }}>
+                  <PieChartComponent />
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Right card */}
-        <div className="col-xl-7 col-lg-7 col-md-7">
+        <div className="col-xl-7 col-lg-7 col-md-12 col-sm-12">
           <div className="card dashboard-card h-100 shadow-sm rounded-4 mt-4">
             <div className="m-4">
               <h5 className="mb-4">Closed Leads per Sales Agent</h5>
-              <div className="d-flex justify-content-center align-items-center">
-                <BarChart data={closedLeadsPerSalesAgent} />
+              <div className="d-flex justify-content-center align-items-center w-100">
+                <div style={{ width: "100%", overflowX: "auto" }}>
+                  <BarChart data={closedLeadsPerSalesAgent} />
+                </div>
               </div>
             </div>
           </div>
