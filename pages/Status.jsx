@@ -29,7 +29,7 @@ const Status = () => {
         </div>
       </div>
     );
-  if (leadsData.count === 0)
+  if (!leadsData)
     return (
       <div className="dashboard-wrapper">
         <div className="d-flex flex-column justify-content-center align-items-center vh-100">
