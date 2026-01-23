@@ -14,21 +14,17 @@ const useLocalFilter = (data = []) => {
     [searchParams]
   );
 
-  // Apply filtering + sorting locally
   const filteredData = useMemo(() => {
     let result = [...data];
 
-    // STATUS FILTER
     if (filters.status) {
       result = result.filter((lead) => lead.status === filters.status);
     }
 
-    // PRIORITY FILTER
     if (filters.priority) {
       result = result.filter((lead) => lead.priority === filters.priority);
     }
 
-    // SORTING
     if (filters.sort) {
       result.sort((a, b) => {
         if (filters.sort === "priority") {
@@ -51,7 +47,6 @@ const useLocalFilter = (data = []) => {
     return result;
   }, [data, filters]);
 
-  // Update URL params
   const updateFilter = useCallback(
     (updates) => {
       setSearchParams((prev) => {
@@ -67,16 +62,10 @@ const useLocalFilter = (data = []) => {
     [setSearchParams]
   );
 
-  // Clear all filters
-  const clearFilters = useCallback(() => {
-    setSearchParams({});
-  }, [setSearchParams]);
-
   return {
     filters,
     filteredData,
     updateFilter,
-    clearFilters,
   };
 };
 
