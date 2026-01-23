@@ -12,7 +12,7 @@ const AgentDetails = () => {
   );
 
   const leadsByAgent = leadsData?.data?.filter(
-    (lead) => lead.salesAgent._id === salesAgentId
+    (lead) => lead.salesAgent?._id === salesAgentId
   );
 
   const activeLeads = leadsByAgent?.filter(
@@ -30,8 +30,13 @@ const AgentDetails = () => {
 
   if (agentsLoading)
     return (
-      <div className="dashboard-wrapper d-flex justify-content-center align-items-center vh-100">
-        <div className="spinner-border text-dark" />
+      <div className="dashboard-wrapper">
+        <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+          <div className="spinner-border text-dark mb-3" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <p className="text-dark fs-5">Loading...</p>
+        </div>
       </div>
     );
 
@@ -62,7 +67,6 @@ const AgentDetails = () => {
         Sales Agent – <span className="text-danger">{salesAgent?.name}</span>
       </h4>
 
-      {/* Stats (responsive wrapper) */}
       <div className="d-flex flex-wrap gap-3 mb-4">
         <h6 className="mb-0">
           Total leads:
@@ -105,7 +109,6 @@ const AgentDetails = () => {
         </h6>
       </div>
 
-      {/* Leads table (already responsive) */}
       <LeadsTable leads={leadsByAgent} />
     </div>
   );

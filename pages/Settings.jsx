@@ -42,7 +42,7 @@ const Settings = () => {
   const agentStats = useMemo(() => {
     if (!leadsData?.data) return {};
     return leadsData.data.reduce((acc, lead) => {
-      const name = lead.salesAgent.name;
+      const name = lead.salesAgent?.name;
       if (!acc[name]) acc[name] = { total: 0, active: 0, closed: 0 };
       acc[name].total += 1;
       lead.status === "Closed" ? acc[name].closed++ : acc[name].active++;
@@ -77,9 +77,33 @@ const Settings = () => {
     }
   };
 
-  if (leadsLoading || agentsLoading) return <p>Loading...</p>;
-  if (leadsError || agentsError) return <p>Error loading data</p>;
-  if (leadsData.count === 0) return <p>No leads found</p>;
+  if (leadsLoading || agentsLoading)
+    return (
+      <div className="dashboard-wrapper">
+        <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+          <div className="spinner-border text-dark mb-3" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <p className="text-dark fs-5">Loading...</p>
+        </div>
+      </div>
+    );
+  if (leadsError || agentsError)
+    return (
+      <div className="dashboard-wrapper">
+        <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+          <p className="text-dark fs-5">Error: {leadsError || agentsError}</p>
+        </div>
+      </div>
+    );
+  if (leadsData.count === 0)
+    return (
+      <div className="dashboard-wrapper">
+        <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+          <p className="text-dark fs-5">No Data Available.</p>
+        </div>
+      </div>
+    );
 
   return (
     <div className="dashboard-wrapper">
@@ -109,7 +133,6 @@ const Settings = () => {
             />
           </div>
 
-          {/* 🔴 Table responsive wrapper */}
           <div className="table-responsive">
             <table className="table">
               <thead>
@@ -235,7 +258,6 @@ const Settings = () => {
             </div>
           </div>
 
-          {/* 🔴 Table responsive wrapper */}
           <div className="table-responsive">
             <table className="table">
               <thead>
@@ -296,7 +318,6 @@ const Settings = () => {
             </table>
           </div>
 
-          {/* Pagination unchanged */}
           <nav aria-label="Pagination">
             <ul className="pagination pagination-sm">
               <li className={`page-item ${page === 1 ? "disabled" : ""}`}>

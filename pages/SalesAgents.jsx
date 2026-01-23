@@ -1,9 +1,21 @@
 import useCrmContext from "../context/CrmContext";
+import { useMemo } from "react";
 
 import { Link } from "react-router-dom";
 const SalesAgents = () => {
   const { agentsData, agentsError, agentsLoading } = useCrmContext();
   const { leadsData, leadsError, leadsLoading } = useCrmContext();
+
+  const agentStats = useMemo(() => {
+    if (!leadsData?.data) return {};
+    return leadsData.data.reduce((acc, lead) => {
+      const name = lead.salesAgent?.name;
+      if (!acc[name]) acc[name] = { total: 0, active: 0, closed: 0 };
+      acc[name].total += 1;
+      lead.status === "Closed" ? acc[name].closed++ : acc[name].active++;
+      return acc;
+    }, {});
+  }, [leadsData?.data]);
 
   if (leadsLoading || agentsLoading)
     return (
@@ -48,105 +60,93 @@ const SalesAgents = () => {
       </div>
       <div>
         <div className="row g-4">
-          {agentsData?.data?.map((agent, index) => (
-            <div
-              key={agent._id}
-              className="col-xl-4 col-lg-4 col-md-6 col-sm-12"
-            >
-              <div class="card h-100">
-                <div class="card-body">
-                  <div className="d-flex">
-                    <img
-                      src={`https://placehold.co/50x50/000000/FFFFFF?text=${agent.name
-                        .trim()
-                        .split(" ")
-                        .map((word) => word[0])
-                        .slice(0, 2)
-                        .join("")
-                        .toUpperCase()}`}
-                      alt="agentName"
-                      class="rounded-circle m-1 me-2"
-                    />
-                    <div className="mt-3 m-1 ">
-                      <h5 class="card-title">{agent.name}</h5>
+          {agentsData?.data?.map((agent, index) => {
+            const stats = agentStats[agent.name] || {
+              total: 0,
+              active: 0,
+              closed: 0,
+            };
+            const conversionRate =
+              stats.total === 0
+                ? "0%"
+                : `${Math.round((stats.closed / stats.total) * 100)}%`;
+            return (
+              <div
+                key={agent._id}
+                className="col-xl-4 col-lg-4 col-md-6 col-sm-12"
+              >
+                <div class="card h-100">
+                  <div class="card-body">
+                    <div className="d-flex">
+                      <img
+                        src={`https://placehold.co/50x50/000000/FFFFFF?text=${agent.name
+                          .trim()
+                          .split(" ")
+                          .map((word) => word[0])
+                          .slice(0, 2)
+                          .join("")
+                          .toUpperCase()}`}
+                        alt="agentName"
+                        class="rounded-circle m-1 me-2"
+                      />
+                      <div className="mt-3 m-1 ">
+                        <h5 class="card-title">{agent.name}</h5>
+                      </div>
+                    </div>
+                    <div class="card-subtitle m-2 text-body-secondary">
+                      <p>
+                        <span className="me-2">
+                          <i class="bi bi-envelope"></i>
+                        </span>
+
+                        {agent.email}
+                      </p>
+                      <p>
+                        <span className="me-2">
+                          <i class="bi bi-telephone"></i>
+                        </span>
+                        +1 (555) 111-2222
+                      </p>
+                    </div>
+                    <hr />
+                    <div className="d-flex justify-content-between align-items-center">
+                      <p>Active Leads:</p>
+                      <span
+                        className="badge rounded-pill bg-secondary badge-soft mb-0"
+                        style={{ padding: "0.5rem" }}
+                      >
+                        {stats.active}
+                      </span>
+                    </div>
+                    <div className="d-flex justify-content-between align-items-center">
+                      <p>Closed Leads:</p>
+                      <span
+                        className="badge rounded-pill bg-secondary badge-soft mb-0"
+                        style={{ padding: "0.5rem" }}
+                      >
+                        {stats.closed}
+                      </span>
+                    </div>
+                    <div className="d-flex justify-content-between align-items-center">
+                      <p>Conversion Rate:</p>
+                      <span
+                        className="badge rounded-pill bg-success mb-0"
+                        style={{ padding: "0.5rem" }}
+                      >
+                        {conversionRate}
+                      </span>
                     </div>
                   </div>
-                  <div class="card-subtitle m-2 text-body-secondary">
-                    <p>
-                      <span className="me-2">
-                        <i class="bi bi-envelope"></i>
-                      </span>
-
-                      {agent.email}
-                    </p>
-                    <p>
-                      <span className="me-2">
-                        <i class="bi bi-telephone"></i>
-                      </span>
-                      +1 (555) 111-2222
-                    </p>
-                  </div>
-                  <hr />
-                  <div className="d-flex justify-content-between align-items-center">
-                    <p>Active Leads:</p>
-                    <span
-                      className="badge rounded-pill bg-secondary badge-soft mb-0"
-                      style={{ padding: "0.5rem" }}
-                    >
-                      {
-                        leadsData?.data?.filter(
-                          (lead) =>
-                            lead.salesAgent._id === agent._id &&
-                            lead.status != "Closed"
-                        ).length
-                      }
-                    </span>
-                  </div>
-                  <div className="d-flex justify-content-between align-items-center">
-                    <p>Closed Leads:</p>
-                    <span
-                      className="badge rounded-pill bg-secondary badge-soft mb-0"
-                      style={{ padding: "0.5rem" }}
-                    >
-                      {
-                        leadsData?.data?.filter(
-                          (lead) =>
-                            lead.salesAgent._id === agent._id &&
-                            lead.status === "Closed"
-                        ).length
-                      }
-                    </span>
-                  </div>
-                  <div className="d-flex justify-content-between align-items-center">
-                    <p>Conversion Rate:</p>
-                    <span
-                      className="badge rounded-pill bg-success mb-0"
-                      style={{ padding: "0.5rem" }}
-                    >
-                      {Math.round(
-                        (leadsData?.data?.filter(
-                          (lead) =>
-                            lead.salesAgent._id === agent._id &&
-                            lead.status === "Closed"
-                        ).length /
-                          leadsData?.data?.filter(
-                            (lead) => lead.salesAgent._id === agent._id
-                          ).length) *
-                          100
-                      )}{" "}
-                      %
-                    </span>
-                  </div>
+                  <Link
+                    className="btn btn-dark rounded-3 px-3 m-3"
+                    to={`/salesAgentDetails/${agent._id}`}
+                  >
+                    <i class="bi bi-file-earmark-text"></i> View Details
+                  </Link>
                 </div>
-                <Link
-                  className="btn btn-dark rounded-3 px-3 m-3"
-                  to={`/salesAgentDetails/${agent._id}`}
-                >
-                  <i class="bi bi-file-earmark-text"></i> View Details
-                </Link>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

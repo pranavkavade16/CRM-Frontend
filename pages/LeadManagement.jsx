@@ -1,28 +1,28 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { useState, useMemo, useEffect } from "react";
-import useFetch from "../customHooks/useFetch";
-import useCrmContext from "../context/CrmContext";
-import BadgePill from "../components/BadgePill";
+import { useParams, useNavigate } from 'react-router-dom';
+import { useState, useMemo, useEffect } from 'react';
+import useFetch from '../customHooks/useFetch';
+import useCrmContext from '../context/CrmContext';
+import BadgePill from '../components/BadgePill';
 import {
   STATUS_COLORS,
   PRIORITY_COLORS,
   SOURCE_COLORS,
-} from "../utils/badgeMap";
+} from '../utils/badgeMap';
 
 const LeadManagement = () => {
   const [toggleEdit, setToggleEdit] = useState(false);
   const [formData, setFormData] = useState({
-    status: "",
-    priority: "",
-    source: "",
-    salesAgent: "",
-    timeToClose: "",
+    status: '',
+    priority: '',
+    source: '',
+    salesAgent: '',
+    timeToClose: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [comment, setComment] = useState("");
+  const [comment, setComment] = useState('');
   console.log(comment);
 
-  console.log("formData", formData);
+  console.log('formData', formData);
 
   const { leadId } = useParams();
   const {
@@ -62,22 +62,22 @@ const LeadManagement = () => {
   useEffect(() => {
     if (toggleEdit && activeLead) {
       setFormData({
-        status: activeLead?.status || "",
-        priority: activeLead?.priority || "",
-        source: activeLead?.source || "",
-        salesAgent: activeLead?.salesAgent?._id || "",
+        status: activeLead?.status || '',
+        priority: activeLead?.priority || '',
+        source: activeLead?.source || '',
+        salesAgent: activeLead?.salesAgent?._id || '',
         timeToClose: String(activeLead?.timeToClose),
       });
     }
   }, [toggleEdit, activeLead]);
 
   const [newTags, setNewTags] = useState([]);
-  const [tagsInput, setTagsInput] = useState("");
+  const [tagsInput, setTagsInput] = useState('');
   console.log(tagsInput);
 
   const commitTags = () => {
     const tags = tagsInput
-      .split(",")
+      .split(',')
       .map((t) => t.trim())
       .filter(Boolean);
 
@@ -85,7 +85,7 @@ const LeadManagement = () => {
     setNewTags((prev) =>
       Array.isArray(prev) ? [...prev, ...tags] : [...tags]
     );
-    setTagsInput("");
+    setTagsInput('');
   };
 
   const handleChange = (event) => {
@@ -108,22 +108,22 @@ const LeadManagement = () => {
       const response = await fetch(
         `https://crm-backend-sqw3.vercel.app/leads/${activeLead?._id}`,
         {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         }
       );
 
       if (!response.ok) {
-        console.log("Failed to update the lead.");
+        console.log('Failed to update the lead.');
       }
 
       const updatedLead = await response.json();
 
-      console.log("Lead is updated successfully", updatedLead);
-      showToast("Lead is updated successfully");
+      console.log('Lead is updated successfully', updatedLead);
+      showToast('Lead is updated successfully');
     } catch (error) {
-      console.log("Failed to updated the lead", error.message);
+      console.log('Failed to updated the lead', error.message);
     } finally {
       setIsSubmitting(false);
       setToggleEdit(false);
@@ -138,23 +138,23 @@ const LeadManagement = () => {
       const response = await fetch(
         `https://crm-backend-sqw3.vercel.app/leads/${activeLead?._id}`,
         {
-          method: "DELETE",
+          method: 'DELETE',
         }
       );
 
       if (!response.ok) {
-        throw "Failed to delete the lead";
+        throw 'Failed to delete the lead';
       }
 
       const deletedLead = await response.json();
-      console.log("Lead deleted successfully.", deletedLead);
-      showToast("Lead deleted successfully.");
+      console.log('Lead deleted successfully.', deletedLead);
+      showToast('Lead deleted successfully.');
 
       setTimeout(() => {
-        navigate("/leads");
+        navigate('/leads');
       }, 1000);
     } catch (error) {
-      console.log("Error in deleting the lead.", error.message);
+      console.log('Error in deleting the lead.', error.message);
     } finally {
       setIsSubmitting(false);
       fetchLeads();
@@ -171,60 +171,91 @@ const LeadManagement = () => {
       const response = await fetch(
         `https://crm-backend-sqw3.vercel.app/leads/${activeLead?._id}/comments`,
         {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         }
       );
 
       if (!response.ok) {
-        throw "Failed to add the comment";
+        throw 'Failed to add the comment';
       }
 
       const addedComment = await response.json();
 
-      console.log("Comment added successfully", addedComment);
+      console.log('Comment added successfully', addedComment);
 
-      setComment("");
+      setComment('');
       fetchComments();
     } catch (error) {
-      console.log("Error adding the comment", error.message);
+      console.log('Error adding the comment', error.message);
     }
   };
-  const statusColor = STATUS_COLORS[activeLead?.status] || "secondary";
-  const priorityColor = PRIORITY_COLORS[activeLead?.priority] || "secondary";
-  const sourceColor = SOURCE_COLORS[activeLead?.source] || "secondary";
+  const statusColor = STATUS_COLORS[activeLead?.status] || 'secondary';
+  const priorityColor = PRIORITY_COLORS[activeLead?.priority] || 'secondary';
+  const sourceColor = SOURCE_COLORS[activeLead?.source] || 'secondary';
 
   const createdDate = new Date(activeLead?.createdAt).toLocaleDateString(
-    "en-IN",
+    'en-IN',
     {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
     }
   );
   const updatedDate = new Date(activeLead?.updatedAt).toLocaleDateString(
-    "en-IN",
+    'en-IN',
     {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
     }
   );
   const closedDate =
     activeLead?.closedAt &&
-    new Date(activeLead?.closedAt).toLocaleDateString("en-IN", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
+    new Date(activeLead?.closedAt).toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
     });
 
   if (leadsError || agentsError || commentError)
-    return <p className="text-danger">{String(leadsError)}</p>;
-  if (leadsLoading || agentsLoading || commentLoading) return <p>Loading…</p>;
+    return (
+      <div className="dashboard-wrapper">
+        <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+          <p className="text-dark fs-5">
+            Error: {leadsError || agentsError || commentError}
+          </p>
+        </div>
+      </div>
+    );
+  if (leadsLoading || agentsLoading || commentLoading)
+    return (
+      <div className="dashboard-wrapper">
+        <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+          <div className="spinner-border text-dark mb-3" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <p className="text-dark fs-5">Loading...</p>
+        </div>
+      </div>
+    );
   if (!leadsData?.count || agentsData?.data?.length === 0)
-    return <p>No leads found</p>;
-  if (!activeLead) return <p>Lead not found</p>;
+    return (
+      <div className="dashboard-wrapper">
+        <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+          <p className="text-dark fs-5">No Data Available.</p>
+        </div>
+      </div>
+    );
+  if (!activeLead)
+    return (
+      <div className="dashboard-wrapper">
+        <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+          <p className="text-dark fs-5">No Data Available.</p>
+        </div>
+      </div>
+    );
 
   return (
     <div className="dashboard-wrapper">
@@ -263,11 +294,11 @@ const LeadManagement = () => {
                   <span className="ms-2">Created</span>
                   <span className="ms-1">
                     {new Date(activeLead?.createdAt).toLocaleDateString(
-                      "en-IN",
+                      'en-IN',
                       {
-                        day: "2-digit",
-                        month: "long",
-                        year: "numeric",
+                        day: '2-digit',
+                        month: 'long',
+                        year: 'numeric',
                       }
                     )}
                   </span>
@@ -277,7 +308,7 @@ const LeadManagement = () => {
                     </strong>
                   </span>
                   <span className="ms-2">
-                    {activeLead?.salesAgent?.name || "Lead not assigned"}
+                    {activeLead?.salesAgent?.name || 'Lead not assigned'}
                   </span>
                 </p>
               </div>
@@ -290,7 +321,7 @@ const LeadManagement = () => {
                   <button
                     className="btn btn-light rounded-3 px-3"
                     onClick={() => setToggleEdit(!toggleEdit)}
-                    style={{ border: "1px solid black" }}
+                    style={{ border: '1px solid black' }}
                   >
                     <i class="bi bi-x-lg"></i> Cancel
                   </button>
@@ -298,11 +329,11 @@ const LeadManagement = () => {
                 <div>
                   <button
                     className="btn btn-dark rounded-3 px-3"
-                    style={{ width: "165px" }}
+                    style={{ width: '165px' }}
                     onClick={handleLeadEdit}
                   >
-                    <i class="bi bi-floppy me-1"></i>{" "}
-                    {isSubmitting ? "Saving..." : "Save"}
+                    <i class="bi bi-floppy me-1"></i>{' '}
+                    {isSubmitting ? 'Saving...' : 'Save'}
                   </button>
                 </div>
               </div>
@@ -442,7 +473,7 @@ const LeadManagement = () => {
                               class="form-control"
                               aria-label="Sizing example input"
                               aria-describedby="inputGroup-sizing-default"
-                              style={{ width: "80px" }}
+                              style={{ width: '80px' }}
                               placeholder="days"
                               name="timeToClose"
                               value={formData.timeToClose}
@@ -511,14 +542,14 @@ const LeadManagement = () => {
                           <span
                             className="d-inline-flex align-items-center justify-content-center rounded-circle me-3"
                             style={{
-                              width: "44px",
-                              height: "44px",
-                              backgroundColor: "#E8F0FF",
+                              width: '44px',
+                              height: '44px',
+                              backgroundColor: '#E8F0FF',
                             }}
                           >
                             <i
                               className="bi bi-calendar3 fs-5"
-                              style={{ color: "#2563EB" }}
+                              style={{ color: '#2563EB' }}
                             ></i>
                           </span>
                           <div>
@@ -532,14 +563,14 @@ const LeadManagement = () => {
                           <span
                             className="d-inline-flex align-items-center justify-content-center rounded-circle me-3"
                             style={{
-                              width: "44px",
-                              height: "44px",
-                              backgroundColor: "#F2E9FF",
+                              width: '44px',
+                              height: '44px',
+                              backgroundColor: '#F2E9FF',
                             }}
                           >
                             <i
                               className="bi bi-clock-history fs-5"
-                              style={{ color: "#7C3AED" }}
+                              style={{ color: '#7C3AED' }}
                             ></i>
                           </span>
                           <div>
@@ -555,24 +586,24 @@ const LeadManagement = () => {
                           <span
                             className="d-inline-flex align-items-center justify-content-center rounded-circle me-3"
                             style={{
-                              width: "44px",
-                              height: "44px",
-                              backgroundColor: "#FFEEDF",
+                              width: '44px',
+                              height: '44px',
+                              backgroundColor: '#FFEEDF',
                             }}
                           >
                             <i
                               className="bi bi-graph-up fs-5"
-                              style={{ color: "#F97316" }}
+                              style={{ color: '#F97316' }}
                             ></i>
                           </span>
                           <div>
                             <div className="fw-semibold h6 mb-1">
-                              {activeLead?.status === "Closed"
-                                ? "Closed"
-                                : "Expected to close"}
+                              {activeLead?.status === 'Closed'
+                                ? 'Closed'
+                                : 'Expected to close'}
                             </div>
                             <div className="text-secondary">
-                              {activeLead?.status === "Closed"
+                              {activeLead?.status === 'Closed'
                                 ? `${closedDate}`
                                 : `${activeLead?.timeToClose} days`}
                             </div>
@@ -660,10 +691,16 @@ const LeadManagement = () => {
                       <div className="d-flex flex-column flex-sm-row align-items-start gap-1">
                         <div className="">
                           <img
-                            src={`https://placehold.co/60x60?text=${
-                              activeLead?.salesAgent?.name.trim().split() || ""
+                            src={`https://placehold.co/50x50/000000/FFFFFF?text=${
+                              activeLead.salesAgent.name
+                                .trim()
+                                .split(' ')
+                                .map((word) => word[0])
+                                .slice(0, 2)
+                                .join('')
+                                .toUpperCase() || ''
                             }`}
-                            alt=""
+                            alt="avatar"
                             class="rounded-circle m-1 me-2"
                           />
                         </div>
@@ -671,10 +708,10 @@ const LeadManagement = () => {
                           <div className="mt-2 ms-2">
                             <h6>
                               {activeLead?.salesAgent?.name ||
-                                "Lead not assigned"}
+                                'Lead not assigned'}
                             </h6>
                             <h6 className="text-muted">
-                              {activeLead?.salesAgent?.email || ""}
+                              {activeLead?.salesAgent?.email || ''}
                             </h6>
                           </div>
                         </div>
@@ -690,14 +727,14 @@ const LeadManagement = () => {
                         <span
                           className="d-inline-flex align-items-center justify-content-center rounded-circle me-3"
                           style={{
-                            width: "44px",
-                            height: "44px",
-                            backgroundColor: "#E8F0FF",
+                            width: '44px',
+                            height: '44px',
+                            backgroundColor: '#E8F0FF',
                           }}
                         >
                           <i
                             className="bi bi-calendar3 fs-5"
-                            style={{ color: "#2563EB" }}
+                            style={{ color: '#2563EB' }}
                           ></i>
                         </span>
                         <div>
@@ -711,14 +748,14 @@ const LeadManagement = () => {
                         <span
                           className="d-inline-flex align-items-center justify-content-center rounded-circle me-3"
                           style={{
-                            width: "44px",
-                            height: "44px",
-                            backgroundColor: "#F2E9FF",
+                            width: '44px',
+                            height: '44px',
+                            backgroundColor: '#F2E9FF',
                           }}
                         >
                           <i
                             className="bi bi-clock-history fs-5"
-                            style={{ color: "#7C3AED" }}
+                            style={{ color: '#7C3AED' }}
                           ></i>
                         </span>
                         <div>
@@ -734,24 +771,24 @@ const LeadManagement = () => {
                         <span
                           className="d-inline-flex align-items-center justify-content-center rounded-circle me-3"
                           style={{
-                            width: "44px",
-                            height: "44px",
-                            backgroundColor: "#FFEEDF",
+                            width: '44px',
+                            height: '44px',
+                            backgroundColor: '#FFEEDF',
                           }}
                         >
                           <i
                             className="bi bi-graph-up fs-5"
-                            style={{ color: "#F97316" }}
+                            style={{ color: '#F97316' }}
                           ></i>
                         </span>
                         <div>
                           <div className="fw-semibold h6 mb-1">
-                            {activeLead?.status === "Closed"
-                              ? "Closed"
-                              : "Expected to close"}
+                            {activeLead?.status === 'Closed'
+                              ? 'Closed'
+                              : 'Expected to close'}
                           </div>
                           <div className="text-secondary">
-                            {activeLead?.status === "Closed"
+                            {activeLead?.status === 'Closed'
                               ? `${closedDate}`
                               : `${activeLead?.timeToClose} days`}
                           </div>
@@ -779,11 +816,17 @@ const LeadManagement = () => {
                     <div className="col-1">
                       <img
                         src={`https://placehold.co/24x24/000000/FFFFFF?text=${
-                          activeLead?.salesAgent?.name.trim().split() || ""
+                          activeLead.salesAgent.name
+                            .trim()
+                            .split(' ')
+                            .map((word) => word[0])
+                            .slice(0, 2)
+                            .join('')
+                            .toUpperCase() || ''
                         }`}
                         alt="avatar"
                         className="rounded-circle ms-2"
-                        style={{ width: 40, height: 40, objectFit: "cover" }}
+                        style={{ width: 40, height: 40, objectFit: 'cover' }}
                       />
                     </div>
                     <div className="col">
@@ -792,7 +835,7 @@ const LeadManagement = () => {
                           class="form-control"
                           placeholder="Leave a comment here"
                           id="floatingTextarea2"
-                          style={{ height: "80px", backgroundColor: "#f8f9fa" }}
+                          style={{ height: '80px', backgroundColor: '#f8f9fa' }}
                           value={comment}
                           onChange={(event) => setComment(event.target.value)}
                         ></textarea>
@@ -821,15 +864,19 @@ const LeadManagement = () => {
                     <div class="d-flex flex-column flex-sm-row align-items-start gap-3">
                       <div>
                         <img
-                          src={`https://placehold.co/24x24/000000/FFFFFF?text=${activeLead?.salesAgent.name
+                          src={`https://placehold.co/24x24/000000/FFFFFF?text=${activeLead.salesAgent.name
                             .trim()
-                            .split()}`}
+                            .split(' ')
+                            .map((word) => word[0])
+                            .slice(0, 2)
+                            .join('')
+                            .toUpperCase()}`}
                           alt="avatar"
                           className="rounded-circle ms-2"
                           style={{
                             width: 40,
                             height: 40,
-                            objectFit: "cover",
+                            objectFit: 'cover',
                           }}
                         />
                       </div>
@@ -843,11 +890,11 @@ const LeadManagement = () => {
                           <span class="text-secondary">·</span>
                           <span class="text-secondary">
                             {new Date(comment.createdAt).toLocaleDateString(
-                              "en-IN",
+                              'en-IN',
                               {
-                                day: "2-digit",
-                                month: "long",
-                                year: "numeric",
+                                day: '2-digit',
+                                month: 'long',
+                                year: 'numeric',
                               }
                             )}
                           </span>

@@ -97,8 +97,34 @@ const AddLead = () => {
   ];
   const priorityData = ["High", "Medium", "Low"];
 
-  if (agentsLoading) return <p>Loading...</p>;
-  if (agentsError) return <p>Error loading data</p>;
+  if (agentsLoading)
+    return (
+      <div className="dashboard-wrapper">
+        <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+          <div className="spinner-border text-dark mb-3" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <p className="text-dark fs-5">Loading...</p>
+        </div>
+      </div>
+    );
+  if (agentsError)
+    return (
+      <div className="dashboard-wrapper">
+        <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+          <p className="text-dark fs-5">Error: {agentsError}</p>
+        </div>
+      </div>
+    );
+
+  if (!agentsData)
+    return (
+      <div className="dashboard-wrapper">
+        <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+          <p className="text-dark fs-5">No Data Available.</p>
+        </div>
+      </div>
+    );
 
   return (
     <div className="dashboard-wrapper">

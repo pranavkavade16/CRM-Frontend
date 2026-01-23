@@ -31,7 +31,7 @@ const Reports = () => {
           <div className="card dashboard-card h-100 shadow-sm rounded-4 mt-4">
             <div className="m-4">
               <h5 className="mb-4">Lead Pipeline Status</h5>
-              {/* ORIGINAL layout preserved */}
+
               <div className="d-flex justify-content-center align-items-center report-chart">
                 <PieChartComponent />
               </div>
@@ -44,7 +44,7 @@ const Reports = () => {
           <div className="card dashboard-card h-100 shadow-sm rounded-4 mt-4">
             <div className="m-4">
               <h5 className="mb-5">Closed Leads per Sales Agent</h5>
-              {/* ORIGINAL layout preserved */}
+
               <div className="d-flex justify-content-center align-items-center report-chart">
                 <div className="mt-5">
                   <BarChart data={closedLeadsPerSalesAgent} />
@@ -55,12 +55,10 @@ const Reports = () => {
         </div>
       </div>
 
-      {/* Bottom chart */}
       <div className="mt-5">
         <div className="card dashboard-card h-75 w-100 shadow-sm rounded-4">
           <div className="m-4">
             <h5 className="mb-5">Lead Status Distribution</h5>
-            {/* ORIGINAL layout preserved */}
             <div className="d-flex justify-content-center align-items-center report-chart">
               <div className="mt-5">
                 <BarChart data={leadsDataByStatus} />
