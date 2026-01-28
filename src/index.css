@@ -324,30 +324,17 @@
 @media (max-width: 768px) {
   .sidebar {
     transform: translateX(-100%);
-    transition: 0.3s ease;
+    transition: transform 0.25s ease;
   }
 
-  .sidebar.show {
+  .sidebar.open {
     transform: translateX(0);
   }
 }
-/* FIX: Mobile layout when sidebar is hidden */
-@media (max-width: 768px) {
-  .nav-bar {
-    margin-left: 0;
-    width: 100%;
-  }
 
-  .dashboard-wrapper {
-    margin-left: 0;
-    width: 100%;
-  }
-
-  .sidebar {
-    z-index: 1050; /* ensure it appears above content */
-  }
+.sidebar button {
+  line-height: 1;
 }
-
 
 
 

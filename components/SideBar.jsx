@@ -1,11 +1,23 @@
 import { NavLink } from "react-router-dom";
 
-const SideBar = () => {
+const SideBar = ({ isOpen, onClose }) => {
   return (
-    <aside className="sidebar">
-      <h5 className="brand">CRM Pro</h5>
+    <aside className={`sidebar ${isOpen ? "open" : ""}`}>
+      {/* Header row inside sidebar */}
+      <div className="d-flex align-items-center justify-content-between px-3 py-3">
+        <h5 className="brand mb-0">CRM Pro</h5>
 
-      <ul className="nav flex-column mt-4 gap-2">
+        {/* Close button (mobile only) */}
+        <button
+          className="btn p-0 border-0 bg-transparent d-md-none"
+          onClick={onClose}
+          aria-label="Close menu"
+        >
+          <i className="bi bi-x-lg fs-4 text-light"></i>
+        </button>
+      </div>
+
+      <ul className="nav flex-column mt-3 gap-2 px-2">
         <li className="nav-item">
           <NavLink
             to="/"

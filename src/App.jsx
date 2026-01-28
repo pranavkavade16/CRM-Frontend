@@ -17,14 +17,24 @@ import AgentDetails from "../pages/AgentDetails";
 import Reports from "../pages/Reports";
 import Settings from "../pages/Settings";
 import Toast from "../components/Toast";
+import { useState } from "react";
 
 function App() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   return (
     <>
       <CrmProvider>
         <BrowserRouter>
-          <NavBar />
-          <SideBar />
+          <NavBar
+            isSidebarOpen={isSidebarOpen}
+            onMenuClick={() => setIsSidebarOpen((prev) => !prev)}
+          />
+
+          <SideBar
+            isOpen={isSidebarOpen}
+            onClose={() => setIsSidebarOpen(false)}
+          />
+
           <Routes>
             <Route path="/" element={<FrontPage />} />
             <Route path="/leads" element={<Leads />} />

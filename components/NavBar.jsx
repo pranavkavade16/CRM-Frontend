@@ -1,38 +1,46 @@
 import { Link } from "react-router-dom";
 
-const NavBar = () => {
+const NavBar = ({ onMenuClick, isSidebarOpen }) => {
   return (
-    <header>
-      <div className="nav-bar" style={{ backgroundColor: "white" }}>
-        <div className="d-flex flex-wrap justify-content-between align-items-center gap-2">
-          <div className="d-flex align-items-center flex-wrap gap-2">
-            <h4 className="brand text-danger mb-0">NexusCRM</h4>
-            <div
-              className="vr d-none d-md-block mx-2"
-              style={{ height: 38 }}
-            ></div>
-            <span className="">
-              <i class="bi bi-calendar"></i>
-            </span>
-            <p className="text-muted mb-0">
+    <header className="dashboard-wrapper bg-white border-bottom">
+      <div className="d-flex justify-content-between align-items-center">
+        <div className="d-flex align-items-center gap-3">
+          <button
+            className="btn p-0 border-0 bg-transparent d-md-none"
+            onClick={onMenuClick}
+            aria-label="Toggle menu"
+          >
+            <i
+              className={`bi ${isSidebarOpen ? "bi-x-lg" : "bi-list"} fs-3`}
+            ></i>
+          </button>
+
+          <h4 className="text-danger fw-semibold mb-0">NexusCRM</h4>
+
+          <div
+            className="vr d-none d-md-block mx-2"
+            style={{ height: 38 }}
+          ></div>
+
+          <div className="d-none d-md-flex align-items-center gap-2 text-muted">
+            <i className="bi bi-calendar"></i>
+            <span>
               {new Date().toLocaleDateString("en-US", {
                 weekday: "long",
                 month: "long",
                 day: "numeric",
                 year: "numeric",
               })}
-            </p>
-          </div>
-
-          <div>
-            <Link
-              className="btn btn-dark rounded-3 btn-sm btn-md-normal"
-              to="/addLead"
-            >
-              + Add Lead
-            </Link>
+            </span>
           </div>
         </div>
+
+        <Link
+          to="/addLead"
+          className="btn btn-dark rounded-3 px-3 text-nowrap ms-4"
+        >
+          + Add Lead
+        </Link>
       </div>
     </header>
   );

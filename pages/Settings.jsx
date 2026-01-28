@@ -1,5 +1,4 @@
 import useCrmContext from "../context/CrmContext";
-import useFilter from "../customHooks/useFilter";
 import useSort from "../customHooks/useSort";
 import useSearch from "../customHooks/useSearch";
 import BadgePill from "../components/BadgePill";

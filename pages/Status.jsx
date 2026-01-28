@@ -1,7 +1,5 @@
 import useFilter from "../customHooks/useFilter";
-import useLocalFilter from "../customHooks/useLocalFilter";
 import useCrmContext from "../context/CrmContext";
-import LeadsComponent from "../components/LeadsComponent";
 import LeadsTable from "../components/LeadsTable";
 
 const Status = () => {
