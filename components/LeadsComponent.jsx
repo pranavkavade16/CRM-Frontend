@@ -12,7 +12,7 @@ import useSearch from "../customHooks/useSearch";
 const LeadsComponent = ({ pageSize = 10 }) => {
   const [page, setPage] = useState(1);
 
-  const { updateFilter, filteredData, filteredError, filteredLoading } =
+  const { updateFilter, filteredData, filteredError, filteredLoading, filter } =
     useFilter();
 
   const leads = Array.isArray(filteredData?.data) ? filteredData.data : [];
@@ -31,17 +31,17 @@ const LeadsComponent = ({ pageSize = 10 }) => {
     setPage(1);
   }, [searchedLeads]);
 
-  if (filteredLoading)
-    return (
-      <div>
-        <div className="d-flex flex-column justify-content-center align-items-center vh-100">
-          <div className="spinner-border text-dark mb-3" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-          <p className="text-dark fs-5">Loading...</p>
-        </div>
-      </div>
-    );
+  // if (filteredLoading)
+  //   return (
+  //     <div>
+  //       <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+  //         <div className="spinner-border text-dark mb-3" role="status">
+  //           <span className="visually-hidden">Loading...</span>
+  //         </div>
+  //         <p className="text-dark fs-5">Loading...</p>
+  //       </div>
+  //     </div>
+  //   );
   if (filteredError)
     return (
       <div>
@@ -86,7 +86,9 @@ const LeadsComponent = ({ pageSize = 10 }) => {
 
           <div className="col-12 col-md-2">
             <select
+              id="status-filter"
               className="form-select bg-light"
+              value={filter.status || ""}
               onChange={(e) => updateFilter({ status: e.target.value })}
             >
               <option value="">Status</option>
@@ -100,7 +102,9 @@ const LeadsComponent = ({ pageSize = 10 }) => {
 
           <div className="col-12 col-md-2">
             <select
+              id="priority-filter"
               className="form-select bg-light"
+              value={filter.priority || ""}
               onChange={(e) => updateFilter({ priority: e.target.value })}
             >
               <option value="">Priority</option>
@@ -130,63 +134,73 @@ const LeadsComponent = ({ pageSize = 10 }) => {
             </select>
           </div>
         </div>
-
-        {/* Table */}
-        <div className="table-responsive leads-table-wrapper">
-          <table className="table table-hover align-middle">
-            <thead>
-              <tr>
-                <th>Lead Name</th>
-                <th>Source</th>
-                <th>Agent</th>
-                <th>Status</th>
-                <th>Priority</th>
-                <th>Time to close</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {slicedData.map((lead) => (
-                <tr key={lead._id}>
-                  <td className="text-truncate" style={{ maxWidth: 180 }}>
-                    {lead.name}
-                  </td>
-                  <td>
-                    <BadgePill
-                      text={lead.source}
-                      color={SOURCE_COLORS[lead.source]}
-                      className="badge-soft"
-                    />
-                  </td>
-                  <td>{lead.salesAgent?.name || "Unassigned"}</td>
-                  <td>
-                    <BadgePill
-                      text={lead.status}
-                      color={STATUS_COLORS[lead.status]}
-                      className="badge-soft-lg"
-                    />
-                  </td>
-                  <td>
-                    <BadgePill
-                      text={lead.priority}
-                      color={PRIORITY_COLORS[lead.priority]}
-                      className="badge-soft"
-                    />
-                  </td>
-                  <td>{lead.timeToClose} Days</td>
-                  <td>
-                    <Link
-                      className="btn btn-dark btn-sm"
-                      to={`/leadManagement/${lead._id}`}
-                    >
-                      Edit
-                    </Link>
-                  </td>
+        {filteredLoading ? (
+          <div>
+            <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+              <div className="spinner-border text-dark mb-3" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+              <p className="text-dark fs-5">Loading...</p>
+            </div>
+          </div>
+        ) : (
+          <div className="table-responsive leads-table-wrapper">
+            <table className="table table-hover align-middle">
+              <thead>
+                <tr>
+                  <th>Lead Name</th>
+                  <th>Source</th>
+                  <th>Agent</th>
+                  <th>Status</th>
+                  <th>Priority</th>
+                  <th>Time to close</th>
+                  <th></th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {slicedData.map((lead) => (
+                  <tr key={lead._id}>
+                    <td className="text-truncate" style={{ maxWidth: 180 }}>
+                      {lead.name}
+                    </td>
+                    <td>
+                      <BadgePill
+                        text={lead.source}
+                        color={SOURCE_COLORS[lead.source]}
+                        className="badge-soft"
+                      />
+                    </td>
+                    <td>{lead.salesAgent?.name || "Unassigned"}</td>
+                    <td>
+                      <BadgePill
+                        text={lead.status}
+                        color={STATUS_COLORS[lead.status]}
+                        className="badge-soft-lg"
+                      />
+                    </td>
+                    <td>
+                      <BadgePill
+                        text={lead.priority}
+                        color={PRIORITY_COLORS[lead.priority]}
+                        className="badge-soft"
+                      />
+                    </td>
+                    <td>{lead.timeToClose} Days</td>
+                    <td>
+                      <Link
+                        className="btn btn-dark btn-sm"
+                        to={`/leadManagement/${lead._id}`}
+                      >
+                        Edit
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+        {/* Table */}
 
         {/* Pagination */}
         <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-3">

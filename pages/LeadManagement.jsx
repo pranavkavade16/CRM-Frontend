@@ -73,7 +73,7 @@ const LeadManagement = () => {
 
   const [newTags, setNewTags] = useState([]);
   const [tagsInput, setTagsInput] = useState("");
-  console.log(tagsInput);
+
 
   const commitTags = () => {
     const tags = tagsInput
