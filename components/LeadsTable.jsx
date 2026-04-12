@@ -9,7 +9,7 @@ import {
 import { useState, useMemo, useEffect } from "react";
 import useLocalFilter from "../customHooks/useLocalFilter";
 
-const LeadsTable = ({ leads = [], pageSize = 10 }) => {
+const LeadsTable = ({ leads = [], pageSize = 10, loading }) => {
   const [page, setPage] = useState(1);
 
   const data = Array.isArray(leads) ? leads : [];
@@ -30,14 +30,26 @@ const LeadsTable = ({ leads = [], pageSize = 10 }) => {
     setPage(1);
   }, [searchedLeads, filteredData]);
 
-  if (!data.length)
+  if (loading)
     return (
-      <div>
+      <div className="dashboard-wrapper">
         <div className="d-flex flex-column justify-content-center align-items-center vh-100">
-          <p className="text-dark fs-5">No Data Available.</p>
+          <div className="spinner-border text-dark mb-3" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <p className="text-dark fs-5">Loading...</p>
         </div>
       </div>
     );
+
+  // if (!data.length)
+  //   return (
+  //     <div>
+  //       <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+  //         <p className="text-dark fs-5">No Data Available.</p>
+  //       </div>
+  //     </div>
+  //   );
 
   return (
     <div className="card w-100 my-3">

@@ -39,14 +39,6 @@ const LeadsComponent = ({ pageSize = 10 }) => {
         </div>
       </div>
     );
-  if (!filteredData)
-    return (
-      <div>
-        <div className="d-flex flex-column justify-content-center align-items-center vh-100">
-          <p className="text-dark fs-5">No Data Available.</p>
-        </div>
-      </div>
-    );
 
   return (
     <div className="card w-100 my-3">

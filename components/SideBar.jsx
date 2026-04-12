@@ -1,7 +1,10 @@
 import { NavLink } from "react-router-dom";
 import { logout } from "../utils/logout";
 
-const SideBar = ({ isOpen, onClose, user }) => {
+const SideBar = ({ isOpen, onClose }) => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  console.log("current user", user);
+
   const getInitials = (name) => {
     if (!name) return "U";
     return name
@@ -35,6 +38,7 @@ const SideBar = ({ isOpen, onClose, user }) => {
             end
             className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
           >
+            <i class="bi bi-ui-checks-grid me-3"></i>
             Dashboard
           </NavLink>
         </li>
@@ -44,6 +48,7 @@ const SideBar = ({ isOpen, onClose, user }) => {
             to="/leads"
             className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
           >
+            <i class="bi bi-search me-3"></i>
             Leads
           </NavLink>
         </li>
@@ -53,6 +58,7 @@ const SideBar = ({ isOpen, onClose, user }) => {
             to="/status"
             className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
           >
+            <i class="bi bi-exclamation-circle me-3"></i>
             Status
           </NavLink>
         </li>
@@ -62,6 +68,7 @@ const SideBar = ({ isOpen, onClose, user }) => {
             to="/salesAgents"
             className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
           >
+            <i class="bi bi-people me-3"></i>
             Sales Agents
           </NavLink>
         </li>
@@ -71,6 +78,7 @@ const SideBar = ({ isOpen, onClose, user }) => {
             to="/reports"
             className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
           >
+            <i class="bi bi-bar-chart me-3"></i>
             Reports
           </NavLink>
         </li>
@@ -80,12 +88,14 @@ const SideBar = ({ isOpen, onClose, user }) => {
             to="/settings"
             className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
           >
+            <i class="bi bi-gear me-3"></i>
             Settings
           </NavLink>
         </li>
 
         <li className="nav-item">
           <a className="nav-link text-danger" onClick={logout}>
+            <i class="bi bi-box-arrow-right me-3"></i>
             Logout
           </a>
         </li>

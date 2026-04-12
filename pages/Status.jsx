@@ -49,7 +49,7 @@ const Status = () => {
         <option value="Contacted">Contacted</option>
         <option value="Closed">Closed</option>
       </select>
-      <LeadsTable leads={filteredData.data} />
+      <LeadsTable leads={filteredData?.data} loading={filteredLoading} />
     </div>
   );
 };

@@ -53,7 +53,6 @@ function App() {
 
           <Route element={<RequireAuth />}>
             <Route element={<AppShell />}>
-              {" "}
               {/* ✅ layout wraps all protected routes */}
               <Route path="/" element={<FrontPage />} />
               <Route path="/leads" element={<Leads />} />

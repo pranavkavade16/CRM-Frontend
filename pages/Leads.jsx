@@ -9,7 +9,7 @@ const Leads = () => {
         <div className="d-flex flex-column justify-content-center align-items-center vh-100">
           <p className="text-dark fs-5">Error: {leadsError}</p>
         </div>
-      </div>
+      </div>,
     );
   if (leadsLoading)
     return (
@@ -22,7 +22,7 @@ const Leads = () => {
         </div>
       </div>
     );
-  if (leadsData.count === 0)
+  if (!leadsData || leadsData.count === 0)
     return (
       <div className="dashboard-wrapper">
         <div className="d-flex flex-column justify-content-center align-items-center vh-100">
