@@ -60,7 +60,7 @@ const AddLead = () => {
       setIsSubmitting(true);
 
       const response = await fetch(
-        "https://crm-backend-sqw3.vercel.app/leads",
+        "https://crm-backend-delta-dun.vercel.app/leads",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

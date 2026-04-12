@@ -21,21 +21,23 @@ export function CrmProvider({ children }) {
     loading: leadsLoading,
     error: leadsError,
     fetchData: fetchLeads,
-  } = useFetch("https://crm-backend-sqw3.vercel.app/leads");
+  } = useFetch("https://crm-backend-delta-dun.vercel.app/leads");
 
   const {
     data: agentsData,
     loading: agentsLoading,
     error: agentsError,
     fetchData: fetchAgents,
-  } = useFetch("https://crm-backend-sqw3.vercel.app/agents");
+  } = useFetch("https://crm-backend-delta-dun.vercel.app/agents");
 
   const {
     data: commentData,
     loading: commentLoading,
     error: commentError,
     fetchData: fetchComments,
-  } = useFetch("https://crm-backend-sqw3.vercel.app/agents/:leadId/comments");
+  } = useFetch(
+    "https://crm-backend-delta-dun.vercel.app/agents/:leadId/comments",
+  );
 
   useEffect(() => {
     fetchLeads();

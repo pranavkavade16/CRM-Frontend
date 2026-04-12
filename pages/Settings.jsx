@@ -19,7 +19,7 @@ const Settings = () => {
 
   const { searchedLeads, setSearch, searchedAgents } = useSearch(
     leadsData?.data,
-    agentsData?.data
+    agentsData?.data,
   );
   const { filteredData, updateFilter } = useLocalFilter(searchedLeads);
   const { sortedLeads, setSortBy } = useSort(filteredData);
@@ -52,8 +52,8 @@ const Settings = () => {
   const handleDeleteAgent = async (agentId) => {
     try {
       await fetch(
-        `https://crm-backend-sqw3.vercel.app/salesAgent/delete/${agentId}`,
-        { method: "DELETE" }
+        `https://crm-backend-delta-dun.vercel.app/salesAgent/delete/${agentId}`,
+        { method: "DELETE" },
       );
       showToast("Sales agent deleted successfully");
     } catch (err) {

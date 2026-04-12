@@ -17,7 +17,7 @@ const useFilter = () => {
   console.log(searchParams);
   console.log(filter);
 
-  const baseURL = "https://crm-backend-sqw3.vercel.app/leads";
+  const baseURL = "https://crm-backend-delta-dun.vercel.app/leads";
 
   const apiUrl = useMemo(() => {
     const queryString = searchParams.toString();
@@ -53,7 +53,7 @@ const useFilter = () => {
         return params;
       });
     },
-    [setSearchParams]
+    [setSearchParams],
   );
 
   const clearFilters = useCallback(() => {

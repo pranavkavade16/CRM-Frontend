@@ -6,7 +6,6 @@ const Status = () => {
   const { leadsData, leadsError, leadsLoading } = useCrmContext();
   const { updateFilter, filteredData, filteredError, filteredLoading } =
     useFilter();
-  console.log(filteredData);
 
   if (leadsError)
     return (

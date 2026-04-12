@@ -29,12 +29,12 @@ const AddSalesAgent = () => {
       }
 
       const response = await fetch(
-        "https://crm-backend-sqw3.vercel.app/agents",
+        "https://crm-backend-delta-dun.vercel.app/agents",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
-        }
+        },
       );
 
       const addedSalesAgent = await response.json();

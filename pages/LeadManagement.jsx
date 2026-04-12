@@ -49,7 +49,7 @@ const LeadManagement = () => {
     error: commentError,
     fetchData: fetchComments,
   } = useFetch(
-    `https://crm-backend-sqw3.vercel.app/leads/${activeLead?._id}/comments`
+    `https://crm-backend-delta-dun.vercel.app/leads/${activeLead?._id}/comments`,
   );
   useEffect(() => {
     if (activeLead?._id) {
@@ -74,7 +74,6 @@ const LeadManagement = () => {
   const [newTags, setNewTags] = useState([]);
   const [tagsInput, setTagsInput] = useState("");
 
-
   const commitTags = () => {
     const tags = tagsInput
       .split(",")
@@ -83,7 +82,7 @@ const LeadManagement = () => {
 
     if (tags.length === 0) return;
     setNewTags((prev) =>
-      Array.isArray(prev) ? [...prev, ...tags] : [...tags]
+      Array.isArray(prev) ? [...prev, ...tags] : [...tags],
     );
     setTagsInput("");
   };
@@ -111,7 +110,7 @@ const LeadManagement = () => {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -139,7 +138,7 @@ const LeadManagement = () => {
         `https://crm-backend-sqw3.vercel.app/leads/${activeLead?._id}`,
         {
           method: "DELETE",
-        }
+        },
       );
 
       if (!response.ok) {
@@ -174,7 +173,7 @@ const LeadManagement = () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -201,7 +200,7 @@ const LeadManagement = () => {
       day: "2-digit",
       month: "long",
       year: "numeric",
-    }
+    },
   );
   const updatedDate = new Date(activeLead?.updatedAt).toLocaleDateString(
     "en-IN",
@@ -209,7 +208,7 @@ const LeadManagement = () => {
       day: "2-digit",
       month: "long",
       year: "numeric",
-    }
+    },
   );
   const closedDate =
     activeLead?.closedAt &&
@@ -299,7 +298,7 @@ const LeadManagement = () => {
                         day: "2-digit",
                         month: "long",
                         year: "numeric",
-                      }
+                      },
                     )}
                   </span>
                   <span className="ms-4">
@@ -895,7 +894,7 @@ const LeadManagement = () => {
                                 day: "2-digit",
                                 month: "long",
                                 year: "numeric",
-                              }
+                              },
                             )}
                           </span>
                         </div>

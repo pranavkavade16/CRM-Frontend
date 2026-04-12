@@ -31,17 +31,6 @@ const LeadsComponent = ({ pageSize = 10 }) => {
     setPage(1);
   }, [searchedLeads]);
 
-  // if (filteredLoading)
-  //   return (
-  //     <div>
-  //       <div className="d-flex flex-column justify-content-center align-items-center vh-100">
-  //         <div className="spinner-border text-dark mb-3" role="status">
-  //           <span className="visually-hidden">Loading...</span>
-  //         </div>
-  //         <p className="text-dark fs-5">Loading...</p>
-  //       </div>
-  //     </div>
-  //   );
   if (filteredError)
     return (
       <div>

@@ -28,7 +28,7 @@ const FrontPage = () => {
         </div>
       </div>
     );
-  if (leadsData.count === 0)
+  if (!leadsData)
     return (
       <div className="dashboard-wrapper">
         <div className="d-flex flex-column justify-content-center align-items-center vh-100">
@@ -81,7 +81,7 @@ const FrontPage = () => {
                 <h4 className="fw-bold mb-1">
                   {
                     leadsData?.data?.filter(
-                      (lead) => lead.status === "Qualified"
+                      (lead) => lead.status === "Qualified",
                     ).length
                   }
                 </h4>

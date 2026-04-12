@@ -1,6 +1,17 @@
 import { NavLink } from "react-router-dom";
+import { logout } from "../utils/logout";
 
-const SideBar = ({ isOpen, onClose }) => {
+const SideBar = ({ isOpen, onClose, user }) => {
+  const getInitials = (name) => {
+    if (!name) return "U";
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
   return (
     <aside className={`sidebar ${isOpen ? "open" : ""}`}>
       {/* Header row inside sidebar */}
@@ -17,7 +28,7 @@ const SideBar = ({ isOpen, onClose }) => {
         </button>
       </div>
 
-      <ul className="nav flex-column mt-3 gap-2 px-2">
+      <ul className="nav flex-column mt-3 gap-2 px-2 flex-grow-1">
         <li className="nav-item">
           <NavLink
             to="/"
@@ -74,11 +85,20 @@ const SideBar = ({ isOpen, onClose }) => {
         </li>
 
         <li className="nav-item">
-          <a className="nav-link text-danger" href="#">
+          <a className="nav-link text-danger" onClick={logout}>
             Logout
           </a>
         </li>
       </ul>
+
+      {/* Profile display */}
+      <div className="sidebar-profile">
+        <div className="sidebar-profile-avatar">{getInitials(user?.name)}</div>
+        <div className="sidebar-profile-info">
+          <span className="sidebar-profile-name">{user?.name || "User"}</span>
+          <span className="sidebar-profile-role">{user?.role || "Admin"}</span>
+        </div>
+      </div>
     </aside>
   );
 };

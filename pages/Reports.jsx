@@ -11,7 +11,7 @@ const Reports = () => {
     error: closedError,
     loading: closedLoading,
     fetchData,
-  } = useFetch("https://crm-backend-sqw3.vercel.app/report/last-week");
+  } = useFetch("https://crm-backend-delta-dun.vercel.app/report/last-week");
 
   useEffect(() => {
     fetchData();
